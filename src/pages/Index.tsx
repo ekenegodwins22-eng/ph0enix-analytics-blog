@@ -43,7 +43,7 @@ const Index = () => {
               "url": BITGET
             },
             "sameAs": [
-              "https://x.com/ph0enix_web3",
+              "https://x.com/sensei_phoenixx",
               "https://t.me/ph0enix_web",
               "https://t.me/Ph0enixadmin_bot"
             ],
@@ -61,7 +61,7 @@ const Index = () => {
             "logo": PROFILE_IMG,
             "description": "Independent Web3 strategist brand helping blockchain projects scale community engagement and retention.",
             "sameAs": [
-              "https://x.com/ph0enix_web3",
+              "https://x.com/sensei_phoenixx",
               "https://t.me/ph0enix_web"
             ],
             "founder": {
@@ -254,7 +254,7 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-foreground font-semibold min-w-[100px]">X (Follow):</span>
-                  <a href="https://x.com/intent/follow?screen_name=ph0enix_web3" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
+                  <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
                     Follow on X
                   </a>
                 </div>

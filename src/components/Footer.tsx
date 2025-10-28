@@ -23,17 +23,25 @@ export const Footer = () => {
               Building the future of Web3 communities and empowering traders worldwide.
             </p>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" className="hover:border-primary/50 hover:text-primary">
-                <Twitter className="w-4 h-4" />
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="hover:border-primary/50 hover:text-primary"
+                asChild
+              >
+                <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer">
+                  <Twitter className="w-4 h-4" />
+                </a>
               </Button>
-              <Button variant="outline" size="icon" className="hover:border-primary/50 hover:text-primary">
-                <Linkedin className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="hover:border-primary/50 hover:text-primary">
-                <Github className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="hover:border-primary/50 hover:text-primary">
-                <Mail className="w-4 h-4" />
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="hover:border-primary/50 hover:text-primary"
+                asChild
+              >
+                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer">
+                  <Mail className="w-4 h-4" />
+                </a>
               </Button>
             </div>
           </div>

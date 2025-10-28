@@ -240,7 +240,7 @@ export default function Resume() {
                     </a>
                   </Button>
                   <Button variant="outline" className="gap-2" asChild>
-                    <a href="https://x.com/ph0enix_web3" target="_blank" rel="noreferrer">
+                    <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer">
                       <Twitter className="w-4 h-4" />
                       X (Twitter)
                     </a>

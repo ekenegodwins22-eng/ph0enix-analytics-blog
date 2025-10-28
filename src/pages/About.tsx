@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Twitter, Send } from "lucide-react";
 
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
-const X_FOLLOW = "https://x.com/intent/follow?screen_name=ph0enix_web3";
+const X_FOLLOW = "https://x.com/intent/follow?screen_name=sensei_phoenixx";
 const TELEGRAM = "https://t.me/ph0enix_web";
 const TELEGRAM_BOT = "https://t.me/Ph0enixadmin_bot";
 
