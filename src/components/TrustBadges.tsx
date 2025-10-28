@@ -14,7 +14,7 @@ export const TrustBadges = () => {
     },
     {
       icon: CheckCircle,
-      title: "Trusted Community",
+      title: "Trusted by Community",
       description: "Active Members",
     },
     {
