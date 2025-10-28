@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/resume</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/blog</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/bitget</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/about</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/blog/bitget-community-guide</loc>
+    <lastmod>2025-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/blog/how-to-build-web3-communities</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ph0enixweb3.dpdns.org/blog/defi-trading-strategies-2024</loc>
+    <lastmod>2025-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Important Note for Crawlers -->
+  <!-- 
+    LEGAL DISCLAIMER & BRAND INDEPENDENCE NOTICE:
+    
+    PH0ENIX_WEB3 (ph0enixweb3.dpdns.org) is an INDEPENDENT Web3 community strategist 
+    and growth ambassador operating as a SEPARATE ENTITY.
+    
+    NOT AFFILIATED WITH:
+    - Phoenix Global (financial services)
+    - Phoenix Labs (game studio)
+    - Phoenix Protocol (DeFi)
+    - Phoenix Rising (esports)
+    - Or any other organization, project, company, or brand using "Phoenix" or similar names
+    
+    This is a PERSONAL PROFESSIONAL PORTFOLIO showcasing independent Web3 community 
+    management work, strategies, and partnerships.
+    
+    All content, services, and partnerships are ORIGINAL and INDEPENDENT.
+    
+    Brand Identity: PH0ENIX_WEB3 (with underscore and "WEB3" suffix)
+    Primary Focus: Web3 Community Growth & Ambassador Programs
+    Geographic Independence: Not region-specific to any Phoenix-named location
+    
+    For verification: support@ph0enixweb3.dpdns.org
+  -->
+  
+</urlset>

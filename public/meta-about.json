@@ -32,5 +32,13 @@
     "@type": "Brand",
     "name": "Bitget Partner"
   },
-  "disclaimer": "PHOENIX_WEB3 is not affiliated with any organization, project, or company named 'Phoenix' or similar. All work and brand content are independent and original."
+  "disclaimer": "PHOENIX_WEB3 is not affiliated with any organization, project, or company named 'Phoenix' or similar. All work and brand content are independent and original.",
+  "disambiguatingDescription": "PH0ENIX_WEB3 is an independent Web3 community strategist and growth ambassador. Not affiliated with Phoenix Global, Phoenix Labs, Phoenix Protocol, Phoenix Rising, or any other organization using Phoenix or similar names. This is a personal professional portfolio for Web3 community management services.",
+  "additionalType": "IndependentProfessional",
+  "brand": {
+    "@type": "Brand",
+    "name": "PH0ENIX_WEB3",
+    "alternateName": "Phoenix Web3",
+    "description": "Independent Web3 community growth and ambassador services brand"
+  }
 }
