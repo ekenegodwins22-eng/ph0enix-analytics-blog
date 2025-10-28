@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -68,7 +69,8 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             <Button
               className="bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
               onClick={() => {
@@ -116,20 +118,23 @@ export const Navbar = () => {
                   </Button>
                 </Link>
               ))}
-              <Button
-                className="w-full bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  if (typeof window !== 'undefined' && (window as any).gtag) {
-                    (window as any).gtag('event', 'click', {
-                      event_category: 'button',
-                      event_label: 'Mobile Navbar Contact',
-                    });
-                  }
-                }}
-              >
-                Contact Me
-              </Button>
+              <div className="flex items-center gap-2 pt-2">
+                <ThemeToggle />
+                <Button
+                  className="flex-1 bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (typeof window !== 'undefined' && (window as any).gtag) {
+                      (window as any).gtag('event', 'click', {
+                        event_category: 'button',
+                        event_label: 'Mobile Navbar Contact',
+                      });
+                    }
+                  }}
+                >
+                  Contact Me
+                </Button>
+              </div>
             </div>
           </div>
         )}
