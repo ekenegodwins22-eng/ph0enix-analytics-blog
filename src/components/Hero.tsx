@@ -77,6 +77,18 @@ export const Hero = () => {
                   size="lg" 
                   variant="outline"
                   className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                  onClick={() => {
+                    handleAnalyticsClick('Blog Hero');
+                    window.location.href = '/blog';
+                  }}
+                >
+                  Blog
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
                   onClick={handleBitgetClick}
                 >
                   Join Bitget

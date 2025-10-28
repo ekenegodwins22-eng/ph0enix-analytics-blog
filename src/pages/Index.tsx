@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { TrustBadges } from "@/components/TrustBadges";
 import { BitgetSection } from "@/components/bitget/BitgetSection";
+import { FeaturedBlogPosts } from "@/components/blog/FeaturedBlogPosts";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -119,6 +120,8 @@ const Index = () => {
             </Card>
           </div>
         </section>
+
+        <FeaturedBlogPosts />
 
         <BitgetSection />
 
