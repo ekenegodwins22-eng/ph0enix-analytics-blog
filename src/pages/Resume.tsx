@@ -52,7 +52,7 @@ export default function Resume() {
                     Community Growth Ambassador • Web3 Strategist
                   </p>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Age: 23 • Timezone: GMT +1
+                    DOB: 2002-05-15 • Age: 23 • Timezone: GMT +1
                   </p>
                   <Button onClick={downloadResume} className="gap-2">
                     <Download className="w-4 h-4" />
