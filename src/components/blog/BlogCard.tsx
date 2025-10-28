@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/LazyImage";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -33,10 +34,12 @@ export const BlogCard = ({
         {/* Image */}
         {image && (
           <div className="relative h-48 overflow-hidden bg-muted">
-            <img
+            <LazyImage
               src={image}
               alt={title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              width="400"
+              height="192"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>

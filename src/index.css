@@ -125,5 +125,38 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-display: swap;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Performance optimizations */
+  img {
+    @apply transition-opacity duration-300;
+    content-visibility: auto;
+  }
+  
+  img[loading="lazy"] {
+    @apply opacity-0;
+  }
+  
+  img[loading="lazy"].loaded {
+    @apply opacity-100;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

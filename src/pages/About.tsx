@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { TrustBadges } from "@/components/TrustBadges";
+import { LazyImage } from "@/components/LazyImage";
 import { Button } from "@/components/ui/button";
 import { Mail, Twitter, Send } from "lucide-react";
 
@@ -18,10 +19,12 @@ export default function About() {
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <div className="max-w-4xl mx-auto text-center mb-16 space-y-6">
-            <img 
+            <LazyImage 
               src={PROFILE_IMG}
               alt="PH0ENIX_WEB3 - Web3 Community Growth Ambassador and Strategist"
               className="w-32 h-32 mx-auto rounded-full border-4 border-primary shadow-glow object-cover"
+              width="128"
+              height="128"
             />
             
             <h1 className="text-4xl md:text-6xl font-bold">

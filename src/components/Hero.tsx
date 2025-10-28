@@ -40,6 +40,9 @@ export const Hero = () => {
                 src={PROFILE_IMG}
                 alt="PH0ENIX_WEB3 - Web3 Community Growth Ambassador and Strategist"
                 className="w-64 h-64 rounded-full border-4 border-primary shadow-glow object-cover animate-scale-in"
+                loading="eager"
+                width="256"
+                height="256"
               />
             </div>
 

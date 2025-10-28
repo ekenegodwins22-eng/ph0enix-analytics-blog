@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { LazyImage } from "@/components/LazyImage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,10 +40,12 @@ export default function Resume() {
             {/* Header */}
             <Card className="p-8 mb-8 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
               <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-                <img 
+                <LazyImage 
                   src={PROFILE_IMG} 
                   alt="PH0ENIX_WEB3 - Professional Web3 Community Manager and Ambassador" 
                   className="w-32 h-32 rounded-full border-4 border-primary shadow-lg"
+                  width="128"
+                  height="128"
                 />
                 <div className="flex-1 text-center md:text-left">
                   <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
