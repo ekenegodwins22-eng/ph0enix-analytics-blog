@@ -1,0 +1,36 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "PH0ENIX_WEB3",
+  "alternateName": "Phoenix Web3",
+  "url": "https://ph0enixweb3.dpdns.org",
+  "image": "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png",
+  "jobTitle": "Web3 Community Strategist & Growth Ambassador",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Independent / Freelance"
+  },
+  "sameAs": [
+    "https://x.com/ph0enix_web3",
+    "https://t.me/ph0enix_web",
+    "https://partner.bitget.ng/bg/E283E7"
+  ],
+  "description": "PHOENIX_WEB3 — a Web3 community strategist and ambassador helping blockchain projects scale, engage, and retain real users through Zealy campaigns, ambassador systems, and community psychology.",
+  "knowsAbout": [
+    "Web3 communities",
+    "Blockchain education",
+    "Crypto marketing",
+    "Zealy XP campaigns",
+    "Community management",
+    "Ambassador programs",
+    "Bitget",
+    "Galxe",
+    "Dropsy Protocol",
+    "Inference Labs"
+  ],
+  "affiliation": {
+    "@type": "Brand",
+    "name": "Bitget Partner"
+  },
+  "disclaimer": "PHOENIX_WEB3 is not affiliated with any organization, project, or company named 'Phoenix' or similar. All work and brand content are independent and original."
+}
