@@ -12,3 +12,4 @@ Allow: /
 
 User-agent: *
 Allow: /
+Sitemap: https://ph0enixweb3.dpdns.org/sitemap.xml
