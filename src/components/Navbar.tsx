@@ -20,6 +20,7 @@ export const Navbar = () => {
     { to: "/", label: "Home" },
     { to: "/blog", label: "Blog" },
     { to: "/bitget", label: "Bitget" },
+    { to: "/resume", label: "Resume" },
     { to: "/about", label: "About" },
   ];
 

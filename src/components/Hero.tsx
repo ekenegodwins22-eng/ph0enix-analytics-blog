@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Users, Zap } from "lucide-react";
+import { ArrowRight, Send, Twitter } from "lucide-react";
+
+const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
+const BITGET = "https://partner.bitget.ng/bg/E283E7";
+const X_FOLLOW = "https://x.com/intent/follow?screen_name=ph0enix_web3";
+const TELEGRAM = "https://t.me/ph0enix_web";
+const TELEGRAM_BOT = "https://t.me/Ph0enixadmin_bot";
 
 export const Hero = () => {
   const handleAnalyticsClick = (label: string) => {
@@ -11,8 +17,13 @@ export const Hero = () => {
     }
   };
 
+  const handleBitgetClick = () => {
+    handleAnalyticsClick('Bitget Hero CTA');
+    window.open(BITGET, '_blank');
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-card to-background">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.1),transparent_50%)]" />
@@ -21,85 +32,94 @@ export const Hero = () => {
       </div>
 
       <div className="container relative z-10 px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-            <Zap className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Web3 Community Expert</span>
-          </div>
-
-          {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-              PH0ENIX_WEB3
-            </span>
-            <br />
-            <span className="text-foreground">
-              Building the Future of Web3
-            </span>
-          </h1>
-
-          {/* Description */}
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Professional community management, trading insights, and crypto expertise. 
-            Empowering traders and communities to thrive in the decentralized world.
-          </p>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 py-8">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Users className="w-6 h-6 text-primary" />
-              </div>
-              <div className="text-left">
-                <div className="text-2xl font-bold text-foreground">10K+</div>
-                <div className="text-sm text-muted-foreground">Community Members</div>
-              </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Profile Image */}
+            <div className="flex-shrink-0">
+              <img 
+                src={PROFILE_IMG}
+                alt="PH0ENIX_WEB3 - Web3 Community Growth Ambassador and Strategist"
+                className="w-64 h-64 rounded-full border-4 border-primary shadow-glow object-cover animate-scale-in"
+              />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-accent/10">
-                <TrendingUp className="w-6 h-6 text-accent" />
-              </div>
-              <div className="text-left">
-                <div className="text-2xl font-bold text-foreground">20%</div>
-                <div className="text-sm text-muted-foreground">Commission Rate</div>
-              </div>
-            </div>
-          </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button 
-              size="lg" 
-              className="group bg-gradient-to-r from-primary to-primary-glow hover:shadow-glow transition-all duration-300"
-              onClick={() => handleAnalyticsClick('Get Started CTA')}
-            >
-              Get Started
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-              onClick={() => handleAnalyticsClick('View Portfolio CTA')}
-            >
-              View Portfolio
-            </Button>
-          </div>
+            {/* Content */}
+            <div className="flex-1 space-y-6 text-center md:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                I'm <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+                  PHOENIX_WEB3
+                </span>
+                <br />
+                <span className="text-foreground text-3xl md:text-5xl">
+                  Building Engaged Web3 Communities That Thrive.
+                </span>
+              </h1>
 
-          {/* Trust indicators */}
-          <div className="pt-8 flex flex-wrap justify-center items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-              <span>Verified Partner</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span>Bitget Official</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-              <span>Web3 Certified</span>
+              <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
+                I help Web3 projects grow strong, engaged, and loyal communities that last.
+                From onboarding systems to ambassador programs — I design growth that converts
+                curious users into committed members.
+              </p>
+
+              {/* Primary CTAs */}
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
+                  onClick={() => {
+                    handleAnalyticsClick('View Resume Hero');
+                    window.location.href = '/resume';
+                  }}
+                >
+                  View Resume
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                  onClick={handleBitgetClick}
+                >
+                  Join Bitget
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* Social Links */}
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                <Button 
+                  variant="ghost"
+                  className="gap-2 text-muted-foreground hover:text-primary"
+                  onClick={() => {
+                    handleAnalyticsClick('X Follow Hero');
+                    window.open(X_FOLLOW, '_blank');
+                  }}
+                >
+                  <Twitter className="w-4 h-4" />
+                  Follow on X
+                </Button>
+                <Button 
+                  variant="ghost"
+                  className="gap-2 text-muted-foreground hover:text-accent"
+                  onClick={() => {
+                    handleAnalyticsClick('Telegram Hero');
+                    window.open(TELEGRAM, '_blank');
+                  }}
+                >
+                  <Send className="w-4 h-4" />
+                  Telegram
+                </Button>
+                <Button 
+                  variant="ghost"
+                  className="gap-2 text-muted-foreground hover:text-primary"
+                  onClick={() => {
+                    handleAnalyticsClick('Chat Bot Hero');
+                    window.open(TELEGRAM_BOT, '_blank');
+                  }}
+                >
+                  <Send className="w-4 h-4" />
+                  Chat Bot
+                </Button>
+              </div>
             </div>
           </div>
         </div>

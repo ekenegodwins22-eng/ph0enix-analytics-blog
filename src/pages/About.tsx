@@ -1,9 +1,13 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { TrustBadges } from "@/components/TrustBadges";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Mail, Twitter, Linkedin, Github } from "lucide-react";
+import { Mail, Twitter, Send } from "lucide-react";
+
+const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
+const X_FOLLOW = "https://x.com/intent/follow?screen_name=ph0enix_web3";
+const TELEGRAM = "https://t.me/ph0enix_web";
+const TELEGRAM_BOT = "https://t.me/Ph0enixadmin_bot";
 
 export default function About() {
   return (
@@ -14,11 +18,11 @@ export default function About() {
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <div className="max-w-4xl mx-auto text-center mb-16 space-y-6">
-            <Avatar className="w-32 h-32 mx-auto border-4 border-primary shadow-glow">
-              <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-4xl font-bold">
-                P
-              </AvatarFallback>
-            </Avatar>
+            <img 
+              src={PROFILE_IMG}
+              alt="PH0ENIX_WEB3 - Web3 Community Growth Ambassador and Strategist"
+              className="w-32 h-32 mx-auto rounded-full border-4 border-primary shadow-glow object-cover"
+            />
             
             <h1 className="text-4xl md:text-6xl font-bold">
               About{" "}
@@ -33,17 +37,20 @@ export default function About() {
             </p>
 
             <div className="flex justify-center gap-3">
-              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary">
-                <Twitter className="w-5 h-5" />
+              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary" asChild>
+                <a href={X_FOLLOW} target="_blank" rel="noreferrer">
+                  <Twitter className="w-5 h-5" />
+                </a>
               </Button>
-              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary">
-                <Linkedin className="w-5 h-5" />
+              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary" asChild>
+                <a href={TELEGRAM} target="_blank" rel="noreferrer">
+                  <Send className="w-5 h-5" />
+                </a>
               </Button>
-              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary">
-                <Github className="w-5 h-5" />
-              </Button>
-              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary">
-                <Mail className="w-5 h-5" />
+              <Button size="icon" variant="outline" className="hover:border-primary/50 hover:text-primary" asChild>
+                <a href="mailto:support@ph0enixweb3.dpdns.org">
+                  <Mail className="w-5 h-5" />
+                </a>
               </Button>
             </div>
           </div>
@@ -130,9 +137,12 @@ export default function About() {
             <Button
               size="lg"
               className="bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
+              asChild
             >
-              <Mail className="mr-2 w-4 h-4" />
-              Get in Touch
+              <a href="mailto:support@ph0enixweb3.dpdns.org">
+                <Mail className="mr-2 w-4 h-4" />
+                Get in Touch
+              </a>
             </Button>
           </div>
         </div>
