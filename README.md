@@ -1,8 +1,10 @@
-# Welcome to your Lovable project
+# PH0ENIX_WEB3
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/fa4ca538-7a42-451a-b85b-b2f46544b1df
+**Live Site**: https://ph0enixweb3.dpdns.org
+**Lovable URL**: https://lovable.dev/projects/fa4ca538-7a42-451a-b85b-b2f46544b1df
+**GitHub**: https://github.com/ekenegodwins22-eng/ph0enixweb3
 
 ## How can I edit this code?
 
