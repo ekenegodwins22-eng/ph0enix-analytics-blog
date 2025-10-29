@@ -17,8 +17,7 @@ export interface BlogPost {
 // Import all blog posts from the content/blog directory
 const blogModules = import.meta.glob('/src/content/blog/*.{md,mdx}', { 
   eager: true,
-  query: '?raw',
-  import: 'default'
+  as: 'raw'
 });
 
 export function getAllBlogPosts(): BlogPost[] {
@@ -26,12 +25,18 @@ export function getAllBlogPosts(): BlogPost[] {
 
   for (const [path, content] of Object.entries(blogModules)) {
     try {
+      // Ensure content is a string
+      if (typeof content !== 'string') {
+        console.error(`Content is not a string for ${path}`);
+        continue;
+      }
+
       // Extract slug from filename
       const filename = path.split('/').pop() || '';
       const slug = filename.replace(/\.(md|mdx)$/, '');
 
       // Parse frontmatter
-      const { data, content: postContent } = matter(content as string);
+      const { data, content: postContent } = matter(content);
 
       // Skip unpublished posts
       if (data.published === false) continue;
