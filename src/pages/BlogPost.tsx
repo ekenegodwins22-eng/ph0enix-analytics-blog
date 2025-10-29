@@ -5,7 +5,7 @@ import { AuthorBio } from "@/components/blog/AuthorBio";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, ArrowLeft, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getBlogPost } from "@/data/blogPosts";
+import { getBlogPost } from "@/lib/blogUtils";
 import { MarkdownContent } from "@/components/blog/MarkdownContent";
 
 export default function BlogPost() {

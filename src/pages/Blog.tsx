@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
 import { BookOpen } from "lucide-react";
-import { getAllBlogPosts } from "@/data/blogPosts";
+import { getAllBlogPosts } from "@/lib/blogUtils";
 
 const categories = ["All", "Guides", "Insights", "Announcements"];
 
