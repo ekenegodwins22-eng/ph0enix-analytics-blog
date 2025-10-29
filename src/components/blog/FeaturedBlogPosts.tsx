@@ -1,39 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "./BlogCard";
 import { ArrowRight, Newspaper } from "lucide-react";
-
-// Latest blog posts data
-const latestPosts = [
-  {
-    slug: "bitget-community-guide",
-    title: "Bitget x PH0ENIX_WEB3 — Community Growth & Trading Guide",
-    description: "How Bitget empowers communities and traders in Web3. Learn about seamless crypto trading, social copy features, and earning passive income.",
-    date: "2025-10-09",
-    readTime: "5 min read",
-    category: "Guides",
-    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80",
-  },
-  {
-    slug: "how-to-build-web3-communities",
-    title: "How to Build Thriving Web3 Communities",
-    description: "Essential strategies for community managers in the decentralized world. From engagement tactics to growth metrics.",
-    date: "2025-09-25",
-    readTime: "8 min read",
-    category: "Insights",
-    image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
-  },
-  {
-    slug: "defi-trading-strategies-2024",
-    title: "DeFi Trading Strategies for 2024",
-    description: "Advanced trading techniques and risk management in decentralized finance. Stay ahead in the crypto markets.",
-    date: "2025-09-15",
-    readTime: "10 min read",
-    category: "Guides",
-    image: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80",
-  },
-];
+import { getAllBlogPosts } from "@/lib/blogUtils";
 
 export const FeaturedBlogPosts = () => {
+  // Get the 3 most recent blog posts
+  const latestPosts = getAllBlogPosts().slice(0, 3);
   return (
     <section className="py-20 bg-gradient-to-b from-background to-card/30">
       <div className="container mx-auto px-4">

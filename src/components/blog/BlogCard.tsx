@@ -8,7 +8,7 @@ interface BlogCardProps {
   title: string;
   description: string;
   date: string;
-  readTime: string;
+  readTime?: string;
   category: string;
   image?: string;
 }
@@ -70,10 +70,12 @@ export const BlogCard = ({
               <Calendar className="w-4 h-4" />
               <span>{new Date(date).toLocaleDateString()}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{readTime}</span>
-            </div>
+            {readTime && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{readTime}</span>
+              </div>
+            )}
           </div>
 
           {/* Read more */}
