@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "./BlogCard";
 import { ArrowRight, Newspaper } from "lucide-react";
-import { getAllBlogPosts } from "@/lib/blogUtils";
+import { getAllBlogPosts } from "@/data/blogPosts";
 
 export const FeaturedBlogPosts = () => {
   // Get the 3 most recent blog posts

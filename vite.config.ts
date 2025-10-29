@@ -14,10 +14,10 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(), 
     mdx({
       remarkPlugins: [remarkGfm, remarkFrontmatter],
     }),
+    react(), 
     mode === "development" && componentTagger(),
     viteCompression({
       algorithm: 'gzip',

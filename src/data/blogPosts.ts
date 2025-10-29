@@ -1,5 +1,9 @@
 import matter from 'gray-matter';
 
+// Import blog posts as raw strings
+import bitgetGuideRaw from '../content/blog/bitget-guide.md?raw';
+import exampleGuideRaw from '../content/blog/example-guide.mdx?raw';
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -14,34 +18,22 @@ export interface BlogPost {
   content?: string;
 }
 
-// Import all blog posts from the content/blog directory
-const blogModules = import.meta.glob('/src/content/blog/*.{md,mdx}', { 
-  eager: true,
-  as: 'raw'
-});
+// Parse all blog posts
+const rawPosts: Record<string, string> = {
+  'bitget-community-guide': bitgetGuideRaw,
+  'example-guide': exampleGuideRaw,
+};
 
 export function getAllBlogPosts(): BlogPost[] {
   const posts: BlogPost[] = [];
 
-  for (const [path, content] of Object.entries(blogModules)) {
+  for (const [slug, rawContent] of Object.entries(rawPosts)) {
     try {
-      // Ensure content is a string
-      if (typeof content !== 'string') {
-        console.error(`Content is not a string for ${path}`);
-        continue;
-      }
-
-      // Extract slug from filename
-      const filename = path.split('/').pop() || '';
-      const slug = filename.replace(/\.(md|mdx)$/, '');
-
-      // Parse frontmatter
-      const { data, content: postContent } = matter(content);
+      const { data, content } = matter(rawContent);
 
       // Skip unpublished posts
       if (data.published === false) continue;
 
-      // Create blog post object
       const post: BlogPost = {
         slug: data.slug || slug,
         title: data.title || 'Untitled',
@@ -53,12 +45,12 @@ export function getAllBlogPosts(): BlogPost[] {
         author: data.author || 'PH0ENIX_WEB3',
         tags: data.tags || [],
         published: data.published !== false,
-        content: postContent,
+        content: content,
       };
 
       posts.push(post);
     } catch (error) {
-      console.error(`Error parsing blog post: ${path}`, error);
+      console.error(`Error parsing blog post: ${slug}`, error);
     }
   }
 
