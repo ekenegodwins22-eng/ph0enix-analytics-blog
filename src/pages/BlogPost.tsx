@@ -2,6 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthorBio } from "@/components/blog/AuthorBio";
+import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, ArrowLeft, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -101,6 +102,9 @@ export default function BlogPost() {
 
           {/* Author Bio */}
           <AuthorBio />
+
+          {/* Related Posts */}
+          <RelatedPosts currentPost={post} />
         </div>
       </article>
 
