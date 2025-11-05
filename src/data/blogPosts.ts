@@ -1,9 +1,5 @@
 import matter from 'gray-matter';
 
-// Import blog posts as raw strings
-import bitgetGuideRaw from '../content/blog/bitget-guide.md?raw';
-import exampleGuideRaw from '../content/blog/example-guide.mdx?raw';
-
 export interface BlogPost {
   slug: string;
   title: string;
@@ -18,24 +14,34 @@ export interface BlogPost {
   content?: string;
 }
 
-// Parse all blog posts
-const rawPosts: Record<string, string> = {
-  'bitget-community-guide': bitgetGuideRaw,
-  'example-guide': exampleGuideRaw,
-};
+// Import all blog posts dynamically
+const blogModules = import.meta.glob('/src/content/blog/*.{md,mdx}', { 
+  eager: true,
+  query: '?raw',
+  import: 'default'
+});
 
 export function getAllBlogPosts(): BlogPost[] {
   const posts: BlogPost[] = [];
 
-  for (const [slug, rawContent] of Object.entries(rawPosts)) {
+  for (const [path, rawContent] of Object.entries(blogModules)) {
     try {
+      // Ensure content is a string
+      if (typeof rawContent !== 'string') {
+        console.error(`Content is not a string for ${path}`, typeof rawContent);
+        continue;
+      }
+
       const { data, content } = matter(rawContent);
 
       // Skip unpublished posts
       if (data.published === false) continue;
 
+      // Extract slug from file path
+      const fileName = path.split('/').pop()?.replace(/\.(md|mdx)$/, '') || '';
+
       const post: BlogPost = {
-        slug: data.slug || slug,
+        slug: data.slug || fileName,
         title: data.title || 'Untitled',
         description: data.description || '',
         date: data.date || new Date().toISOString().split('T')[0],
@@ -50,7 +56,7 @@ export function getAllBlogPosts(): BlogPost[] {
 
       posts.push(post);
     } catch (error) {
-      console.error(`Error parsing blog post: ${slug}`, error);
+      console.error(`Error parsing blog post: ${path}`, error);
     }
   }
 
