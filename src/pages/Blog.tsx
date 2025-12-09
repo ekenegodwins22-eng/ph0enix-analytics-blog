@@ -1,23 +1,17 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
 import { BookOpen } from "lucide-react";
-import { getAllBlogPosts } from "@/data/blogPosts";
+import { useBlogPostsByCategory } from "@/hooks/useBlogPosts";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const categories = ["All", "Guides", "Insights", "Announcements"];
+const categories = ["All", "Guides", "Trading", "DeFi", "News", "Analysis", "Tutorials"];
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
-  
-  // Load all blog posts from MDX/MD files
-  const blogPosts = useMemo(() => getAllBlogPosts(), []);
-
-  const filteredPosts =
-    activeCategory === "All"
-      ? blogPosts
-      : blogPosts.filter((post) => post.category === activeCategory);
+  const { data: posts = [], isLoading } = useBlogPostsByCategory(activeCategory);
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,15 +46,39 @@ export default function Blog() {
             />
           </div>
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="h-48 w-full rounded-xl" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Blog Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <BlogCard key={post.slug} {...post} />
-            ))}
-          </div>
+          {!isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post) => (
+                <BlogCard
+                  key={post.slug}
+                  slug={post.slug}
+                  title={post.title}
+                  description={post.description}
+                  date={post.created_at}
+                  readTime={post.read_time || "5 min read"}
+                  category={post.category}
+                  image={post.image || undefined}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Empty state */}
-          {filteredPosts.length === 0 && (
+          {!isLoading && posts.length === 0 && (
             <div className="text-center py-16">
               <p className="text-muted-foreground text-lg">
                 No posts found in this category yet. Check back soon!
