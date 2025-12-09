@@ -14,11 +14,10 @@ export interface BlogPost {
   content?: string;
 }
 
-// Import all blog posts dynamically
+// Import all blog posts as raw strings
 const blogModules = import.meta.glob('/src/content/blog/*.{md,mdx}', { 
   eager: true,
-  query: '?raw',
-  import: 'default'
+  as: 'raw'
 });
 
 export function getAllBlogPosts(): BlogPost[] {
