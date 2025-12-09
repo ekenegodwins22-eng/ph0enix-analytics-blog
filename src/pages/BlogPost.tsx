@@ -2,16 +2,36 @@ import { useParams, Navigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthorBio } from "@/components/blog/AuthorBio";
-import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, ArrowLeft, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getBlogPost } from "@/data/blogPosts";
+import { useBlogPost } from "@/hooks/useBlogPosts";
 import { MarkdownContent } from "@/components/blog/MarkdownContent";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getBlogPost(slug) : null;
+  const { data: post, isLoading } = useBlogPost(slug || "");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-24 pb-16 container mx-auto px-4 max-w-4xl">
+          <Skeleton className="h-8 w-32 mb-8" />
+          <Skeleton className="h-6 w-24 mb-4" />
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-6 w-48 mb-8" />
+          <Skeleton className="h-64 w-full mb-8" />
+          <div className="space-y-4">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return <Navigate to="/blog" replace />;
@@ -57,11 +77,11 @@ export default function BlogPost() {
             <div className="flex items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(post.date).toLocaleDateString()}</span>
+                <span>{new Date(post.created_at).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                <span>{post.readTime}</span>
+                <span>{post.read_time}</span>
               </div>
             </div>
           </div>
@@ -102,9 +122,6 @@ export default function BlogPost() {
 
           {/* Author Bio */}
           <AuthorBio />
-
-          {/* Related Posts */}
-          <RelatedPosts currentPost={post} />
         </div>
       </article>
 

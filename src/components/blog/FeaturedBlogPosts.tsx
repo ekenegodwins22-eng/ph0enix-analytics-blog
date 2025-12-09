@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "./BlogCard";
 import { ArrowRight, Newspaper } from "lucide-react";
-import { getAllBlogPosts } from "@/data/blogPosts";
+import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const FeaturedBlogPosts = () => {
-  // Get the 3 most recent blog posts
-  const latestPosts = getAllBlogPosts().slice(0, 3);
+  const { data: posts = [], isLoading } = useBlogPosts();
+  const latestPosts = posts.slice(0, 3);
+
   return (
     <section className="py-20 bg-gradient-to-b from-background to-card/30">
       <div className="container mx-auto px-4">
@@ -27,12 +29,43 @@ export const FeaturedBlogPosts = () => {
           </p>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-48 w-full rounded-xl" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Blog Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {latestPosts.map((post) => (
-            <BlogCard key={post.slug} {...post} />
-          ))}
-        </div>
+        {!isLoading && latestPosts.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {latestPosts.map((post) => (
+              <BlogCard
+                key={post.slug}
+                slug={post.slug}
+                title={post.title}
+                description={post.description}
+                date={post.created_at}
+                readTime={post.read_time || "5 min read"}
+                category={post.category}
+                image={post.image || undefined}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && latestPosts.length === 0 && (
+          <div className="text-center py-12 mb-12">
+            <p className="text-muted-foreground">No blog posts yet. Check back soon!</p>
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="text-center">
