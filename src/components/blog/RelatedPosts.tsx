@@ -1,5 +1,5 @@
 import { BlogCard } from "./BlogCard";
-import { getAllBlogPosts, BlogPost } from "@/data/blogPosts";
+import { useBlogPosts, BlogPost } from "@/hooks/useBlogPosts";
 import { Newspaper } from "lucide-react";
 
 interface RelatedPostsProps {
@@ -8,7 +8,7 @@ interface RelatedPostsProps {
 }
 
 export const RelatedPosts = ({ currentPost, maxPosts = 3 }: RelatedPostsProps) => {
-  const allPosts = getAllBlogPosts();
+  const { data: allPosts = [] } = useBlogPosts();
   
   // Calculate relevance score for each post
   const scoredPosts = allPosts
@@ -51,7 +51,16 @@ export const RelatedPosts = ({ currentPost, maxPosts = 3 }: RelatedPostsProps) =
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {scoredPosts.map(({ post }) => (
-          <BlogCard key={post.slug} {...post} />
+          <BlogCard 
+            key={post.slug} 
+            slug={post.slug}
+            title={post.title}
+            description={post.description}
+            date={post.created_at}
+            category={post.category}
+            image={post.image || undefined}
+            readTime={post.read_time || undefined}
+          />
         ))}
       </div>
     </section>
