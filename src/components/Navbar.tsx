@@ -1,15 +1,28 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X, LogIn } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Menu, X, LogIn, LogOut, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Failed to sign out");
+    } else {
+      toast.success("Signed out successfully");
+      navigate("/");
+    }
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,6 +100,31 @@ export const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
+            {isLoggedIn ? (
+              <>
+                <Link to="/admin">
+                  <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+                    <User className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  onClick={handleLogout}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+              </Link>
+            )}
             <Button
               className="bg-gradient-to-r from-primary to-accent hover:shadow-glow transition-all duration-300"
               onClick={() => {
@@ -135,18 +173,43 @@ export const Navbar = () => {
                 </Link>
               ))}
               <div className="border-t border-border pt-2 mt-2">
-                <Link
-                  to={isLoggedIn ? "/admin" : "/auth"}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-muted-foreground"
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-muted-foreground"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        Admin Panel
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-muted-foreground"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <LogIn className="w-4 h-4 mr-2" />
-                    {isLoggedIn ? "Admin Panel" : "Sign In"}
-                  </Button>
-                </Link>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-muted-foreground"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
               </div>
               <div className="flex items-center gap-2 pt-2">
                 <ThemeToggle />
