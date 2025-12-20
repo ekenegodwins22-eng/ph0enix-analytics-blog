@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X, LogIn, LogOut, User } from "lucide-react";
+import { Menu, X, LogIn, LogOut, User, ChevronDown, Settings } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,11 +45,13 @@ export const Navbar = () => {
     // Check initial auth state
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email ?? null);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -101,22 +112,33 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
             {isLoggedIn ? (
-              <>
-                <Link to="/admin">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
                     <User className="w-4 h-4 mr-2" />
-                    Admin
+                    <span className="max-w-[120px] truncate">{userEmail?.split('@')[0] || 'Account'}</span>
+                    <ChevronDown className="w-4 h-4 ml-1" />
                   </Button>
-                </Link>
-                <Button
-                  variant="outline"
-                  onClick={handleLogout}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </Button>
-              </>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <p className="text-sm font-medium">Signed in as</p>
+                    <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin" className="cursor-pointer">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Admin Panel
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Link to="/auth">
                 <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
