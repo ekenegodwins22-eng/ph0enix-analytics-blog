@@ -1,4 +1,4 @@
-import { Twitter, Linkedin, Github, Mail } from "lucide-react";
+import { Twitter, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -16,7 +16,7 @@ export const Footer = () => {
                 <span className="text-white font-bold text-lg">P</span>
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                PH0ENIX_WEB3
+                PHOENIX THE WEB3 SENSEI
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -29,7 +29,7 @@ export const Footer = () => {
                 className="hover:border-primary/50 hover:text-primary"
                 asChild
               >
-                <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer">
+                <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer" aria-label="Follow on Twitter">
                   <Twitter className="w-4 h-4" />
                 </a>
               </Button>
@@ -39,7 +39,17 @@ export const Footer = () => {
                 className="hover:border-primary/50 hover:text-primary"
                 asChild
               >
-                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer">
+                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer" aria-label="Join Telegram">
+                  <Send className="w-4 h-4" />
+                </a>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="hover:border-primary/50 hover:text-primary"
+                asChild
+              >
+                <a href="mailto:support@senseiphoenix.name.ng" aria-label="Email support">
                   <Mail className="w-4 h-4" />
                 </a>
               </Button>
@@ -55,6 +65,7 @@ export const Footer = () => {
                 { to: "/blog", label: "Blog" },
                 { to: "/bitget", label: "Bitget" },
                 { to: "/about", label: "About" },
+                { to: "/resume", label: "Resume" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
@@ -73,46 +84,59 @@ export const Footer = () => {
             <h3 className="font-semibold text-foreground mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
                   Documentation
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   Community
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="mailto:support@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
                   Support
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/resume" className="text-muted-foreground hover:text-primary transition-colors">
                   Portfolio
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Contact & Legal */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Legal</h3>
+            <h3 className="font-semibold text-foreground mb-4">Contact</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="mailto:support@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
+                  support@senseiphoenix.name.ng
+                </a>
+              </li>
+              <li>
+                <a href="mailto:privacy@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
+                  privacy@senseiphoenix.name.ng
+                </a>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-4 mt-6">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
                   Disclaimer
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -121,7 +145,7 @@ export const Footer = () => {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} PH0ENIX_WEB3. All rights reserved. Built with passion for Web3.
+            © {currentYear} PHOENIX THE WEB3 SENSEI. All rights reserved. Built with passion for Web3.
           </p>
         </div>
       </div>

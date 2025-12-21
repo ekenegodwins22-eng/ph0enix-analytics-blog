@@ -39,7 +39,7 @@ const emptyPost: Omit<BlogPost, "id" | "created_at" | "updated_at"> = {
   category: "Guides",
   image: "",
   read_time: "5 min read",
-  author: "PH0ENIX_WEB3",
+  author: "PHOENIX THE WEB3 SENSEI",
   tags: [],
   published: false,
 };
@@ -128,7 +128,7 @@ const Admin = () => {
       category: editingPost.category || "Guides",
       image: editingPost.image || null,
       read_time: editingPost.read_time || "5 min read",
-      author: editingPost.author || "PH0ENIX_WEB3",
+      author: editingPost.author || "PHOENIX THE WEB3 SENSEI",
       tags,
       published: editingPost.published || false,
     };
@@ -251,7 +251,7 @@ const Admin = () => {
                     <Plus className="h-4 w-4 mr-2" /> New Post
                   </Button>
                 </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingPost && "id" in editingPost ? "Edit Post" : "Create New Post"}
@@ -260,7 +260,7 @@ const Admin = () => {
               
               {editingPost && (
                 <div className="space-y-4 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Title *</Label>
                       <Input
@@ -304,7 +304,7 @@ const Admin = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="category">Category</Label>
                       <Select
@@ -332,7 +332,7 @@ const Admin = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="author">Author</Label>
                       <Input
@@ -399,12 +399,12 @@ const Admin = () => {
           <div className="grid gap-4">
             {posts.map((post) => (
               <Card key={post.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-4">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold truncate">{post.title}</h3>
-                        <span className={`text-xs px-2 py-0.5 rounded ${
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-sm md:text-base truncate max-w-[200px] md:max-w-none">{post.title}</h3>
+                        <span className={`text-xs px-2 py-0.5 rounded whitespace-nowrap ${
                           post.published 
                             ? "bg-accent/20 text-accent" 
                             : "bg-muted text-muted-foreground"
@@ -412,16 +412,16 @@ const Admin = () => {
                           {post.published ? "Published" : "Draft"}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">{post.description}</p>
-                      <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
+                      <p className="text-xs md:text-sm text-muted-foreground truncate">{post.description}</p>
+                      <div className="flex flex-wrap gap-1 md:gap-2 mt-2 text-xs text-muted-foreground">
                         <span>{post.category}</span>
                         <span>•</span>
                         <span>{post.read_time}</span>
-                        <span>•</span>
-                        <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                        <span className="hidden md:inline">•</span>
+                        <span className="hidden md:inline">{new Date(post.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 md:gap-2 self-end md:self-auto">
                       <Button
                         variant="ghost"
                         size="sm"
