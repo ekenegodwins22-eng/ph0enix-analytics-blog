@@ -46,19 +46,120 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
     };
 
     const renderInlineFormatting = (text: string): ReactNode => {
-      // Handle links [text](url)
-      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline" target="_blank" rel="noopener noreferrer">$1</a>');
-      
-      // Handle bold **text**
-      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold">$1</strong>');
-      
-      // Handle italic *text*
-      text = text.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
-      
-      // Handle inline code `code`
-      text = text.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-muted rounded text-sm font-mono">$1</code>');
-      
-      return <span dangerouslySetInnerHTML={{ __html: text }} />;
+      // Split by patterns and build an array of elements
+      const parts: ReactNode[] = [];
+      let remaining = text;
+      let keyIndex = 0;
+
+      while (remaining.length > 0) {
+        // Check for clickable image: [![alt](img-url)](link-url)
+        const clickableImageMatch = remaining.match(/^\[\!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/);
+        if (clickableImageMatch) {
+          const [fullMatch, alt, imgUrl, linkUrl] = clickableImageMatch;
+          parts.push(
+            <a 
+              key={`clickable-img-${keyIndex++}`}
+              href={linkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block my-4"
+            >
+              <img 
+                src={imgUrl} 
+                alt={alt} 
+                className="rounded-lg max-w-full h-auto hover:opacity-90 transition-opacity cursor-pointer"
+                loading="lazy"
+              />
+            </a>
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // Check for standalone image: ![alt](url)
+        const imageMatch = remaining.match(/^\!\[([^\]]*)\]\(([^)]+)\)/);
+        if (imageMatch) {
+          const [fullMatch, alt, url] = imageMatch;
+          parts.push(
+            <img 
+              key={`img-${keyIndex++}`}
+              src={url} 
+              alt={alt} 
+              className="rounded-lg max-w-full h-auto my-4"
+              loading="lazy"
+            />
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // Check for link: [text](url)
+        const linkMatch = remaining.match(/^\[([^\]]+)\]\(([^)]+)\)/);
+        if (linkMatch) {
+          const [fullMatch, linkText, url] = linkMatch;
+          parts.push(
+            <a 
+              key={`link-${keyIndex++}`}
+              href={url}
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {linkText}
+            </a>
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // Check for bold: **text**
+        const boldMatch = remaining.match(/^\*\*([^*]+)\*\*/);
+        if (boldMatch) {
+          const [fullMatch, boldText] = boldMatch;
+          parts.push(
+            <strong key={`bold-${keyIndex++}`} className="font-bold">
+              {boldText}
+            </strong>
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // Check for italic: *text*
+        const italicMatch = remaining.match(/^\*([^*]+)\*/);
+        if (italicMatch) {
+          const [fullMatch, italicText] = italicMatch;
+          parts.push(
+            <em key={`italic-${keyIndex++}`} className="italic">
+              {italicText}
+            </em>
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // Check for inline code: `code`
+        const codeMatch = remaining.match(/^`([^`]+)`/);
+        if (codeMatch) {
+          const [fullMatch, codeText] = codeMatch;
+          parts.push(
+            <code key={`code-${keyIndex++}`} className="px-1.5 py-0.5 bg-muted rounded text-sm font-mono">
+              {codeText}
+            </code>
+          );
+          remaining = remaining.slice(fullMatch.length);
+          continue;
+        }
+
+        // No special pattern found, add the next character as plain text
+        // Find the next special character or end of string
+        const nextSpecialIndex = remaining.slice(1).search(/[\[\!\*`]/);
+        const endIndex = nextSpecialIndex === -1 ? remaining.length : nextSpecialIndex + 1;
+        parts.push(remaining.slice(0, endIndex));
+        remaining = remaining.slice(endIndex);
+      }
+
+      return parts.length === 1 ? parts[0] : <>{parts}</>;
     };
 
     lines.forEach((line, index) => {
