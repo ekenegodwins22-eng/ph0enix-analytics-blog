@@ -83,7 +83,7 @@ export const Navbar = () => {
               <span className="text-white font-bold text-lg">P</span>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              PH0ENIX_WEB3
+              PHOENIX WEB3
             </span>
           </Link>
 

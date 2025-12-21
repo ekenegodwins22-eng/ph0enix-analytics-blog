@@ -44,6 +44,27 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://www.senseiphoenix.name.ng/privacy</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.senseiphoenix.name.ng/terms</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.senseiphoenix.name.ng/disclaimer</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
   <!-- Blog Posts -->
   <url>
     <loc>https://www.senseiphoenix.name.ng/blog/how-to-use-bitget-copy-trading</loc>
