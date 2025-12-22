@@ -3,8 +3,8 @@ import { ArrowRight, Send, Twitter } from "lucide-react";
 
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
 const BITGET = "https://partner.bitget.ng/bg/E283E7";
-const X_FOLLOW = "https://x.com/intent/follow?screen_name=sensei_phoenixx";
-const TELEGRAM = "https://t.me/ph0enix_web";
+const X_FOLLOW = "https://x.com/intent/follow?screen_name=sensei_phoenixz";
+const TELEGRAM = "https://t.me/sensei_phoenixz";
 const TELEGRAM_BOT = "https://t.me/Ph0enixadmin_bot";
 
 export const Hero = () => {
@@ -38,7 +38,7 @@ export const Hero = () => {
             <div className="flex-shrink-0">
               <img 
                 src={PROFILE_IMG}
-                alt="PH0ENIX_WEB3 - Web3 Community Growth Ambassador and Strategist"
+                alt="PHOENIX THE WEB3 SENSEI - Web3 Community Growth Ambassador and Strategist"
                 className="w-64 h-64 rounded-full border-4 border-primary shadow-glow object-cover animate-scale-in"
                 loading="eager"
                 width="256"
@@ -50,7 +50,7 @@ export const Hero = () => {
             <div className="flex-1 space-y-6 text-center md:text-left">
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
                 I'm <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-                  PHOENIX_WEB3
+                  PHOENIX THE WEB3 SENSEI
                 </span>
                 <br />
                 <span className="text-foreground text-3xl md:text-5xl">
@@ -110,7 +110,7 @@ export const Hero = () => {
                   }}
                 >
                   <Twitter className="w-4 h-4" />
-                  Follow on X
+                  Follow @sensei_phoenixz
                 </Button>
                 <Button 
                   variant="ghost"

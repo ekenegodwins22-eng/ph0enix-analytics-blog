@@ -29,7 +29,7 @@ export const Footer = () => {
                 className="hover:border-primary/50 hover:text-primary"
                 asChild
               >
-                <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer" aria-label="Follow on Twitter">
+                <a href="https://x.com/intent/follow?screen_name=sensei_phoenixz" target="_blank" rel="noreferrer" aria-label="Follow on X">
                   <Twitter className="w-4 h-4" />
                 </a>
               </Button>
@@ -39,7 +39,7 @@ export const Footer = () => {
                 className="hover:border-primary/50 hover:text-primary"
                 asChild
               >
-                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer" aria-label="Join Telegram">
+                <a href="https://t.me/sensei_phoenixz" target="_blank" rel="noreferrer" aria-label="Join Telegram">
                   <Send className="w-4 h-4" />
                 </a>
               </Button>
@@ -49,7 +49,7 @@ export const Footer = () => {
                 className="hover:border-primary/50 hover:text-primary"
                 asChild
               >
-                <a href="mailto:support@senseiphoenix.name.ng" aria-label="Email support">
+                <a href="mailto:mail@senseiphoenix.name.ng" aria-label="Email">
                   <Mail className="w-4 h-4" />
                 </a>
               </Button>
@@ -89,12 +89,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://t.me/sensei_phoenixz" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   Community
                 </a>
               </li>
               <li>
-                <a href="mailto:support@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="mailto:mail@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
                   Support
                 </a>
               </li>
@@ -111,13 +111,13 @@ export const Footer = () => {
             <h3 className="font-semibold text-foreground mb-4">Contact</h3>
             <ul className="space-y-2">
               <li>
-                <a href="mailto:support@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
-                  support@senseiphoenix.name.ng
+                <a href="mailto:mail@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
+                  mail@senseiphoenix.name.ng
                 </a>
               </li>
               <li>
-                <a href="mailto:privacy@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
-                  privacy@senseiphoenix.name.ng
+                <a href="mailto:contact@senseiphoenix.name.ng" className="text-muted-foreground hover:text-primary transition-colors">
+                  contact@senseiphoenix.name.ng
                 </a>
               </li>
             </ul>

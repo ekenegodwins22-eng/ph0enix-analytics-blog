@@ -12,30 +12,32 @@ import { Helmet } from "react-helmet";
 
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
 const BITGET = "https://partner.bitget.ng/bg/E283E7";
+const SITE_URL = "https://www.senseiphoenix.name.ng";
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>PH0ENIX_WEB3 | Web3 Community & Trading Insights</title>
-        <meta name="description" content="PH0ENIX_WEB3 — Web3 Community Builder, Ambassador & Strategist. Building thriving, engaged communities across Web3, DeFi, and tech ecosystems." />
-        <meta name="keywords" content="Web3, community growth, Bitget, Zealy, crypto ambassador, blockchain marketing, PH0ENIX_WEB3, community building, DeFi engagement" />
-        <meta name="author" content="PH0ENIX_WEB3" />
-        <meta name="robots" content="index, follow" />
+        <title>PHOENIX THE WEB3 SENSEI | Web3 Community & Trading Insights</title>
+        <meta name="description" content="PHOENIX THE WEB3 SENSEI — Web3 Community Builder, Ambassador & Strategist. Building thriving, engaged communities across Web3, DeFi, and tech ecosystems." />
+        <meta name="keywords" content="Web3, community growth, Bitget, Zealy, crypto ambassador, blockchain marketing, PHOENIX THE WEB3 SENSEI, sensei_phoenixz, community building, DeFi engagement" />
+        <meta name="author" content="PHOENIX THE WEB3 SENSEI" />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <link rel="canonical" href={SITE_URL} />
         
         {/* JSON-LD Person Schema */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Person",
-            "name": "PH0ENIX_WEB3",
-            "alternateName": "Phoenix Web3",
-            "url": "https://ph0enixweb3.dpdns.org",
+            "name": "PHOENIX THE WEB3 SENSEI",
+            "alternateName": ["sensei_phoenixz", "Phoenix Web3", "Sensei Phoenix"],
+            "url": SITE_URL,
             "image": PROFILE_IMG,
             "jobTitle": "Web3 Growth Strategist & Community Builder",
             "worksFor": {
               "@type": "Organization",
-              "name": "PH0ENIX_WEB3"
+              "name": "PHOENIX THE WEB3 SENSEI"
             },
             "affiliation": {
               "@type": "Organization",
@@ -43,10 +45,12 @@ const Index = () => {
               "url": BITGET
             },
             "sameAs": [
-              "https://x.com/sensei_phoenixx",
-              "https://t.me/ph0enix_web",
+              "https://x.com/sensei_phoenixz",
+              "https://twitter.com/sensei_phoenixz",
+              "https://t.me/sensei_phoenixz",
               "https://t.me/Ph0enixadmin_bot"
             ],
+            "email": "mail@senseiphoenix.name.ng",
             "disambiguatingDescription": "Independent professional not affiliated with any other company or project named Phoenix."
           })}
         </script>
@@ -56,17 +60,17 @@ const Index = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "PH0ENIX_WEB3",
-            "url": "https://ph0enixweb3.dpdns.org",
+            "name": "PHOENIX THE WEB3 SENSEI",
+            "url": SITE_URL,
             "logo": PROFILE_IMG,
             "description": "Independent Web3 strategist brand helping blockchain projects scale community engagement and retention.",
             "sameAs": [
-              "https://x.com/sensei_phoenixx",
-              "https://t.me/ph0enix_web"
+              "https://x.com/sensei_phoenixz",
+              "https://t.me/sensei_phoenixz"
             ],
             "founder": {
               "@type": "Person",
-              "name": "PH0ENIX_WEB3"
+              "name": "PHOENIX THE WEB3 SENSEI"
             },
             "affiliation": {
               "@type": "Organization",
@@ -76,6 +80,7 @@ const Index = () => {
             "contactPoint": {
               "@type": "ContactPoint",
               "contactType": "Business inquiries",
+              "email": "contact@senseiphoenix.name.ng",
               "url": "https://t.me/Ph0enixadmin_bot"
             }
           })}
@@ -86,11 +91,11 @@ const Index = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "name": "PH0ENIX_WEB3 Official Site",
-            "url": "https://ph0enixweb3.dpdns.org",
+            "name": "PHOENIX THE WEB3 SENSEI Official Site",
+            "url": SITE_URL,
             "potentialAction": {
               "@type": "SearchAction",
-              "target": "https://ph0enixweb3.dpdns.org/?s={search_term_string}",
+              "target": `${SITE_URL}/blog?search={search_term_string}`,
               "query-input": "required name=search_term_string"
             }
           })}
@@ -106,11 +111,11 @@ const Index = () => {
         <section id="about" className="py-20 bg-gradient-to-b from-background to-background/50">
           <div className="container mx-auto px-4 max-w-5xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              About <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">PH0ENIX_WEB3</span>
+              About <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">PHOENIX THE WEB3 SENSEI</span>
             </h2>
             <Card className="p-8 bg-card/50 backdrop-blur">
               <p className="text-muted-foreground leading-relaxed mb-4">
-                I'm PH0ENIX_WEB3 — a Web3 community growth strategist and ambassador helping blockchain projects scale and connect with their true supporters.
+                I'm PHOENIX THE WEB3 SENSEI — a Web3 community growth strategist and ambassador helping blockchain projects scale and connect with their true supporters.
                 My journey started with curiosity about blockchain communities and grew into a mission to make the decentralized world more human.
                 I specialise in designing growth systems that convert curious users into active believers — through onboarding, ambassador programs, and creative campaigns.
               </p>
@@ -228,7 +233,7 @@ const Index = () => {
                 </p>
                 <p className="text-foreground font-medium">
                   The future of Web3 will belong to communities that stay human — and that's exactly what
-                  PH0ENIX_WEB3 stands for.
+                  PHOENIX THE WEB3 SENSEI stands for.
                 </p>
               </div>
             </Card>
@@ -248,20 +253,26 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <span className="text-foreground font-semibold min-w-[100px]">Email:</span>
-                  <a href="mailto:support@ph0enixweb3.dpdns.org" className="text-primary hover:text-primary-glow transition-colors">
-                    support@ph0enixweb3.dpdns.org
+                  <a href="mailto:mail@senseiphoenix.name.ng" className="text-primary hover:text-primary-glow transition-colors">
+                    mail@senseiphoenix.name.ng
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-foreground font-semibold min-w-[100px]">Contact:</span>
+                  <a href="mailto:contact@senseiphoenix.name.ng" className="text-primary hover:text-primary-glow transition-colors">
+                    contact@senseiphoenix.name.ng
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-foreground font-semibold min-w-[100px]">X (Follow):</span>
-                  <a href="https://x.com/intent/follow?screen_name=sensei_phoenixx" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
-                    Follow on X
+                  <a href="https://x.com/intent/follow?screen_name=sensei_phoenixz" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
+                    @sensei_phoenixz
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-foreground font-semibold min-w-[100px]">Telegram:</span>
-                  <a href="https://t.me/ph0enix_web" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
-                    @ph0enix_web
+                  <a href="https://t.me/sensei_phoenixz" target="_blank" rel="noreferrer" className="text-primary hover:text-primary-glow transition-colors">
+                    @sensei_phoenixz
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
@@ -281,7 +292,7 @@ const Index = () => {
             <h2 className="text-3xl font-bold text-center mb-8">Disclaimer</h2>
             <Card className="p-8 bg-card/50 backdrop-blur">
               <p className="text-muted-foreground leading-relaxed mb-4">
-                PH0ENIX_WEB3 is an independent community strategist and Web3 ambassador not affiliated
+                PHOENIX THE WEB3 SENSEI is an independent community strategist and Web3 ambassador not affiliated
                 with any other "Phoenix" or similarly named organizations, projects, or brands.
                 All content, strategies, and partnerships presented here represent independent professional
                 work for Web3 community development and education.
