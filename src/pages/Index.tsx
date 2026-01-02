@@ -25,6 +25,24 @@ const Index = () => {
         <meta name="robots" content="index, follow, max-image-preview:large" />
         <link rel="canonical" href={SITE_URL} />
         
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="PHOENIX THE WEB3 SENSEI | Web3 Community & Trading Insights" />
+        <meta property="og:description" content="Web3 Community Builder, Ambassador & Strategist. Building thriving, engaged communities across Web3, DeFi, and tech ecosystems." />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:image" content={PROFILE_IMG} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="PHOENIX THE WEB3 SENSEI" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="PHOENIX THE WEB3 SENSEI | Web3 Community & Trading Insights" />
+        <meta name="twitter:description" content="Web3 Community Builder, Ambassador & Strategist. Building thriving communities in Web3 & DeFi." />
+        <meta name="twitter:image" content={PROFILE_IMG} />
+        <meta name="twitter:site" content="@sensei_phoenixz" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
+        
         {/* JSON-LD Person Schema */}
         <script type="application/ld+json">
           {JSON.stringify({

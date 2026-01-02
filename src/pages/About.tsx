@@ -7,8 +7,8 @@ import { Mail, Twitter, Send } from "lucide-react";
 import { Helmet } from "react-helmet";
 
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
-const X_FOLLOW = "https://x.com/intent/follow?screen_name=sensei_phoenixx";
-const TELEGRAM = "https://t.me/ph0enix_web";
+const X_FOLLOW = "https://x.com/intent/follow?screen_name=sensei_phoenixz";
+const TELEGRAM = "https://t.me/sensei_phoenixz";
 
 export default function About() {
   const structuredData = {
@@ -17,7 +17,7 @@ export default function About() {
     "mainEntity": {
       "@type": "Person",
       "name": "PHOENIX THE WEB3 SENSEI",
-      "alternateName": ["sensei_phoenixx", "senseiphoenix"],
+      "alternateName": ["sensei_phoenixz", "senseiphoenix"],
       "url": "https://www.senseiphoenix.name.ng/about",
       "image": PROFILE_IMG,
       "description": "Professional Web3 community builder, crypto trading expert, and Bitget partner. Helping traders and communities thrive in the blockchain ecosystem.",
@@ -28,9 +28,9 @@ export default function About() {
         "url": "https://www.bitget.com"
       },
       "sameAs": [
-        "https://x.com/sensei_phoenixx",
-        "https://twitter.com/sensei_phoenixx",
-        "https://t.me/ph0enix_web",
+        "https://x.com/sensei_phoenixz",
+        "https://twitter.com/sensei_phoenixz",
+        "https://t.me/sensei_phoenixz",
         "https://t.me/Ph0enixadmin_bot"
       ],
       "email": "support@senseiphoenix.name.ng",
@@ -64,7 +64,7 @@ export default function About() {
         <meta name="twitter:title" content="About PHOENIX THE WEB3 SENSEI" />
         <meta name="twitter:description" content="Professional Web3 community builder, crypto trading expert, and Bitget partner." />
         <meta name="twitter:image" content={PROFILE_IMG} />
-        <meta name="twitter:creator" content="@sensei_phoenixx" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
         
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

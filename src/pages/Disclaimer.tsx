@@ -11,6 +11,21 @@ export default function Disclaimer() {
         <meta name="description" content="Important disclaimer about the content and information provided on PHOENIX THE WEB3 SENSEI website regarding cryptocurrency and trading." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.senseiphoenix.name.ng/disclaimer" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Disclaimer | PHOENIX THE WEB3 SENSEI" />
+        <meta property="og:description" content="Important disclaimer about cryptocurrency and trading content on PHOENIX THE WEB3 SENSEI website." />
+        <meta property="og:url" content="https://www.senseiphoenix.name.ng/disclaimer" />
+        <meta property="og:image" content="https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png" />
+        <meta property="og:site_name" content="PHOENIX THE WEB3 SENSEI" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Disclaimer | PHOENIX THE WEB3 SENSEI" />
+        <meta name="twitter:description" content="Important disclaimer about cryptocurrency and trading content." />
+        <meta name="twitter:site" content="@sensei_phoenixz" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
       </Helmet>
 
       <Navbar />

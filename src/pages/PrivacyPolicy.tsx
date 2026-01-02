@@ -10,6 +10,21 @@ export default function PrivacyPolicy() {
         <meta name="description" content="Privacy Policy for PHOENIX THE WEB3 SENSEI website. Learn how we collect, use, and protect your personal information." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.senseiphoenix.name.ng/privacy" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Privacy Policy | PHOENIX THE WEB3 SENSEI" />
+        <meta property="og:description" content="Privacy Policy for PHOENIX THE WEB3 SENSEI website. Learn how we collect, use, and protect your personal information." />
+        <meta property="og:url" content="https://www.senseiphoenix.name.ng/privacy" />
+        <meta property="og:image" content="https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png" />
+        <meta property="og:site_name" content="PHOENIX THE WEB3 SENSEI" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Privacy Policy | PHOENIX THE WEB3 SENSEI" />
+        <meta name="twitter:description" content="Privacy Policy for PHOENIX THE WEB3 SENSEI website." />
+        <meta name="twitter:site" content="@sensei_phoenixz" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
       </Helmet>
 
       <Navbar />
@@ -171,8 +186,8 @@ export default function PrivacyPolicy() {
                 </li>
                 <li>
                   <strong className="text-foreground">Twitter:</strong>{" "}
-                  <a href="https://x.com/sensei_phoenixx" target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                    @sensei_phoenixx
+                  <a href="https://x.com/sensei_phoenixz" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                    @sensei_phoenixz
                   </a>
                 </li>
               </ul>

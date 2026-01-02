@@ -6,15 +6,73 @@ import { CategoryFilter } from "@/components/blog/CategoryFilter";
 import { BookOpen } from "lucide-react";
 import { useBlogPostsByCategory } from "@/hooks/useBlogPosts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet";
 
+const SITE_URL = "https://www.senseiphoenix.name.ng";
+const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
 const categories = ["All", "Guides", "Trading", "DeFi", "News", "Analysis", "Tutorials"];
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
   const { data: posts = [], isLoading } = useBlogPostsByCategory(activeCategory);
 
+  const blogListSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "PHOENIX THE WEB3 SENSEI Blog",
+    "description": "Web3 education, crypto trading insights, DeFi strategies, and blockchain technology guides by PHOENIX THE WEB3 SENSEI.",
+    "url": `${SITE_URL}/blog`,
+    "author": {
+      "@type": "Person",
+      "name": "PHOENIX THE WEB3 SENSEI",
+      "url": `${SITE_URL}/about`,
+      "sameAs": [
+        "https://x.com/sensei_phoenixz",
+        "https://t.me/sensei_phoenixz"
+      ]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PHOENIX THE WEB3 SENSEI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": PROFILE_IMG
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Blog & Insights | PHOENIX THE WEB3 SENSEI - Web3 Education Hub</title>
+        <meta name="description" content="Explore Web3 education, crypto trading guides, DeFi strategies, and blockchain insights. Stay updated with PHOENIX THE WEB3 SENSEI's latest articles." />
+        <meta name="keywords" content="Web3 blog, crypto trading, DeFi guides, blockchain education, cryptocurrency, sensei_phoenixz" />
+        <meta name="author" content="PHOENIX THE WEB3 SENSEI" />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <link rel="canonical" href={`${SITE_URL}/blog`} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Blog & Insights | PHOENIX THE WEB3 SENSEI" />
+        <meta property="og:description" content="Explore Web3 education, crypto trading guides, DeFi strategies, and blockchain insights." />
+        <meta property="og:url" content={`${SITE_URL}/blog`} />
+        <meta property="og:image" content={PROFILE_IMG} />
+        <meta property="og:site_name" content="PHOENIX THE WEB3 SENSEI" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blog & Insights | PHOENIX THE WEB3 SENSEI" />
+        <meta name="twitter:description" content="Web3 education, crypto trading guides, DeFi strategies, and blockchain insights." />
+        <meta name="twitter:image" content={PROFILE_IMG} />
+        <meta name="twitter:site" content="@sensei_phoenixz" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(blogListSchema)}
+        </script>
+      </Helmet>
+
       <Navbar />
       
       <main className="pt-24 pb-16">
