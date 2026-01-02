@@ -6,8 +6,6 @@ import viteCompression from 'vite-plugin-compression';
 import mdx from '@mdx-js/rollup';
 import remarkGfm from 'remark-gfm';
 import remarkFrontmatter from 'remark-frontmatter';
-import Prerender from 'vite-plugin-prerender';
-import { staticRoutes } from './src/lib/prerender-routes';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -39,13 +37,6 @@ export default defineConfig(({ mode }) => ({
     viteCompression({
       algorithm: 'brotliCompress',
       ext: '.br',
-    }),
-    mode === 'production' && Prerender({
-      staticDir: path.resolve(__dirname, 'dist'),
-      routes: staticRoutes,
-      renderer: {
-        renderAfterTime: 500,
-      },
     }),
   ].filter(Boolean),
   resolve: {
