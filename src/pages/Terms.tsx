@@ -10,6 +10,21 @@ export default function Terms() {
         <meta name="description" content="Terms of Service for PHOENIX THE WEB3 SENSEI website. Read our terms and conditions for using our services." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.senseiphoenix.name.ng/terms" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Terms of Service | PHOENIX THE WEB3 SENSEI" />
+        <meta property="og:description" content="Terms of Service for PHOENIX THE WEB3 SENSEI website. Read our terms and conditions." />
+        <meta property="og:url" content="https://www.senseiphoenix.name.ng/terms" />
+        <meta property="og:image" content="https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png" />
+        <meta property="og:site_name" content="PHOENIX THE WEB3 SENSEI" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Terms of Service | PHOENIX THE WEB3 SENSEI" />
+        <meta name="twitter:description" content="Terms of Service for PHOENIX THE WEB3 SENSEI website." />
+        <meta name="twitter:site" content="@sensei_phoenixz" />
+        <meta name="twitter:creator" content="@sensei_phoenixz" />
       </Helmet>
 
       <Navbar />
