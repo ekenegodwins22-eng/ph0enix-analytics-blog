@@ -41,6 +41,8 @@ export const Hero = () => {
                 alt="PHOENIX THE WEB3 SENSEI - Web3 Community Growth Ambassador and Strategist"
                 className="w-64 h-64 rounded-full border-4 border-primary shadow-glow object-cover animate-scale-in"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 width="256"
                 height="256"
               />
