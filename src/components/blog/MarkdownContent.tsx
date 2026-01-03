@@ -194,12 +194,14 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         return;
       }
 
-      // Headings
+      // Headings - with IDs for Table of Contents
       if (line.startsWith('# ')) {
         flushList();
+        const text = line.slice(2);
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
         elements.push(
-          <h1 key={`h1-${index}`} className="text-4xl font-bold mt-8 mb-4 text-foreground">
-            {renderInlineFormatting(line.slice(2))}
+          <h1 key={`h1-${index}`} id={id} className="text-4xl font-bold mt-8 mb-4 text-foreground scroll-mt-24">
+            {renderInlineFormatting(text)}
           </h1>
         );
         return;
@@ -207,9 +209,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
       if (line.startsWith('## ')) {
         flushList();
+        const text = line.slice(3);
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
         elements.push(
-          <h2 key={`h2-${index}`} className="text-3xl font-bold mt-8 mb-4 text-foreground">
-            {renderInlineFormatting(line.slice(3))}
+          <h2 key={`h2-${index}`} id={id} className="text-3xl font-bold mt-8 mb-4 text-foreground scroll-mt-24">
+            {renderInlineFormatting(text)}
           </h2>
         );
         return;
@@ -217,9 +221,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
       if (line.startsWith('### ')) {
         flushList();
+        const text = line.slice(4);
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
         elements.push(
-          <h3 key={`h3-${index}`} className="text-2xl font-bold mt-6 mb-3 text-foreground">
-            {renderInlineFormatting(line.slice(4))}
+          <h3 key={`h3-${index}`} id={id} className="text-2xl font-bold mt-6 mb-3 text-foreground scroll-mt-24">
+            {renderInlineFormatting(text)}
           </h3>
         );
         return;
@@ -227,9 +233,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
       if (line.startsWith('#### ')) {
         flushList();
+        const text = line.slice(5);
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
         elements.push(
-          <h4 key={`h4-${index}`} className="text-xl font-bold mt-4 mb-2 text-foreground">
-            {renderInlineFormatting(line.slice(5))}
+          <h4 key={`h4-${index}`} id={id} className="text-xl font-bold mt-4 mb-2 text-foreground scroll-mt-24">
+            {renderInlineFormatting(text)}
           </h4>
         );
         return;

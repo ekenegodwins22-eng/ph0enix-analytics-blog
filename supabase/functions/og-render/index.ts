@@ -75,16 +75,14 @@ function generateHTML(meta: {
   <meta name="twitter:image" content="${meta.image}" />
   <meta name="twitter:site" content="@sensei_phoenixz" />
   <meta name="twitter:creator" content="@sensei_phoenixz" />
-  
-  <!-- Redirect to the actual SPA -->
-  <meta http-equiv="refresh" content="0;url=${meta.url}" />
-  <script>window.location.href = "${meta.url}";</script>
 </head>
 <body>
-  <h1>${escapeHtml(meta.title)}</h1>
-  <p>${escapeHtml(meta.description)}</p>
-  <img src="${meta.image}" alt="${escapeHtml(meta.title)}" />
-  <p>Redirecting to <a href="${meta.url}">${meta.url}</a>...</p>
+  <main>
+    <h1>${escapeHtml(meta.title)}</h1>
+    <p>${escapeHtml(meta.description)}</p>
+    <img src="${meta.image}" alt="${escapeHtml(meta.title)}" />
+    <p>Visit: <a href="${meta.url}">${meta.url}</a></p>
+  </main>
 </body>
 </html>`
 }
