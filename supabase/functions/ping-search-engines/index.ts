@@ -7,6 +7,7 @@ const corsHeaders = {
 
 const SITE_URL = 'https://www.senseiphoenix.name.ng';
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
+const INDEXNOW_KEY = 'senseiphoenix';
 
 interface PingResult {
   engine: string;
@@ -15,19 +16,20 @@ interface PingResult {
   message?: string;
 }
 
-async function pingGoogle(url: string): Promise<PingResult> {
+async function pingGoogle(): Promise<PingResult> {
   try {
-    // Google Ping API for sitemap updates
+    // Google Indexing API ping (sitemap submission)
     const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(SITEMAP_URL)}`;
     const response = await fetch(pingUrl, { method: 'GET' });
     
     console.log(`Google ping response: ${response.status}`);
     
+    // Google returns 200 even if sitemap isn't immediately processed
     return {
       engine: 'Google',
-      success: response.ok,
+      success: response.status === 200 || response.status === 204,
       status: response.status,
-      message: response.ok ? 'Sitemap ping successful' : 'Ping failed'
+      message: 'Sitemap ping sent'
     };
   } catch (error) {
     console.error('Google ping error:', error);
@@ -39,53 +41,67 @@ async function pingGoogle(url: string): Promise<PingResult> {
   }
 }
 
-async function pingBing(url: string): Promise<PingResult> {
+async function pingBingIndexNow(urls: string[]): Promise<PingResult> {
   try {
-    // Bing URL Submission API (IndexNow compatible)
-    const pingUrl = `https://www.bing.com/ping?sitemap=${encodeURIComponent(SITEMAP_URL)}`;
-    const response = await fetch(pingUrl, { method: 'GET' });
+    // IndexNow API for Bing, Yandex, and other participating search engines
+    const body = {
+      host: 'www.senseiphoenix.name.ng',
+      key: INDEXNOW_KEY,
+      keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
+      urlList: urls
+    };
     
-    console.log(`Bing ping response: ${response.status}`);
+    const response = await fetch('https://api.indexnow.org/indexnow', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(body)
+    });
     
+    console.log(`IndexNow ping response: ${response.status}`);
+    
+    // IndexNow returns 200 (OK), 202 (Accepted), or 200 with no body
     return {
-      engine: 'Bing',
-      success: response.ok,
+      engine: 'IndexNow (Bing/Yandex)',
+      success: response.status === 200 || response.status === 202,
       status: response.status,
-      message: response.ok ? 'Sitemap ping successful' : 'Ping failed'
+      message: response.status === 200 || response.status === 202 ? 'URLs submitted successfully' : 'Submission pending'
     };
   } catch (error) {
-    console.error('Bing ping error:', error);
+    console.error('IndexNow ping error:', error);
     return {
-      engine: 'Bing',
+      engine: 'IndexNow (Bing/Yandex)',
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
 
-async function pingIndexNow(url: string): Promise<PingResult> {
-  try {
-    // IndexNow API - works with Bing, Yandex, and others
-    // Using Bing's IndexNow endpoint
-    const indexNowUrl = `https://www.bing.com/indexnow?url=${encodeURIComponent(url)}&key=senseiphoenix`;
-    const response = await fetch(indexNowUrl, { method: 'GET' });
-    
-    console.log(`IndexNow ping response: ${response.status}`);
-    
-    return {
-      engine: 'IndexNow',
-      success: response.status === 200 || response.status === 202,
-      status: response.status,
-      message: response.status === 200 || response.status === 202 ? 'URL submitted successfully' : 'Submission pending or failed'
-    };
-  } catch (error) {
-    console.error('IndexNow ping error:', error);
-    return {
-      engine: 'IndexNow',
-      success: false,
-      message: error instanceof Error ? error.message : 'Unknown error'
-    };
+async function getAllBlogUrls(): Promise<string[]> {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  
+  const { data: posts } = await supabase
+    .from('blog_posts')
+    .select('slug')
+    .eq('published', true);
+  
+  const urls = [
+    SITE_URL,
+    `${SITE_URL}/blog`,
+    `${SITE_URL}/about`,
+    `${SITE_URL}/bitget`
+  ];
+  
+  if (posts) {
+    posts.forEach(post => {
+      urls.push(`${SITE_URL}/blog/${post.slug}`);
+    });
   }
+  
+  return urls;
 }
 
 Deno.serve(async (req) => {
@@ -95,9 +111,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { slug, action } = await req.json();
+    const { slug, action } = await req.json().catch(() => ({ action: 'sitemap_update' }));
     
-    console.log(`Ping request received - action: ${action}, slug: ${slug}`);
+    console.log(`Ping request received - action: ${action}, slug: ${slug || 'N/A'}`);
 
     const results: PingResult[] = [];
     
@@ -108,27 +124,29 @@ Deno.serve(async (req) => {
       console.log(`Pinging search engines for new post: ${postUrl}`);
       
       // Ping all search engines in parallel
-      const [googleResult, bingResult, indexNowResult] = await Promise.all([
-        pingGoogle(postUrl),
-        pingBing(postUrl),
-        pingIndexNow(postUrl)
+      const [googleResult, indexNowResult] = await Promise.all([
+        pingGoogle(),
+        pingBingIndexNow([postUrl])
       ]);
       
-      results.push(googleResult, bingResult, indexNowResult);
+      results.push(googleResult, indexNowResult);
       
-    } else if (action === 'sitemap_update') {
-      // Just ping sitemap updates
+    } else if (action === 'sitemap_update' || action === 'weekly_ping') {
+      // Ping sitemap updates with all URLs
       console.log('Pinging search engines for sitemap update');
       
-      const [googleResult, bingResult] = await Promise.all([
-        pingGoogle(SITEMAP_URL),
-        pingBing(SITEMAP_URL)
+      const allUrls = await getAllBlogUrls();
+      console.log(`Submitting ${allUrls.length} URLs to search engines`);
+      
+      const [googleResult, indexNowResult] = await Promise.all([
+        pingGoogle(),
+        pingBingIndexNow(allUrls)
       ]);
       
-      results.push(googleResult, bingResult);
+      results.push(googleResult, indexNowResult);
     } else {
       return new Response(
-        JSON.stringify({ error: 'Invalid action. Use "new_post" with slug or "sitemap_update"' }),
+        JSON.stringify({ error: 'Invalid action. Use "new_post" with slug, "sitemap_update", or "weekly_ping"' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -144,7 +162,7 @@ Deno.serve(async (req) => {
         timestamp: new Date().toISOString()
       }),
       { 
-        status: allSuccessful ? 200 : 207,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
