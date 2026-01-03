@@ -138,6 +138,17 @@ export const Footer = () => {
                   Disclaimer
                 </Link>
               </li>
+              <li>
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem("cookie-consent");
+                    window.location.reload();
+                  }}
+                  className="text-muted-foreground hover:text-primary transition-colors text-left"
+                >
+                  Cookie Preferences
+                </button>
+              </li>
             </ul>
           </div>
         </div>

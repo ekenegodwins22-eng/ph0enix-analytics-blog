@@ -1,15 +1,88 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Cookie, X } from "lucide-react";
+import { Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
+
+const GA_ID = "G-2KF0JFRY2J";
+const ADSENSE_ID = "ca-pub-3167199119695111";
+
+// Load Google Analytics
+const loadGoogleAnalytics = () => {
+  if (document.getElementById('ga-script')) return;
+  
+  const script = document.createElement('script');
+  script.id = 'ga-script';
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+  script.async = true;
+  document.head.appendChild(script);
+
+  script.onload = () => {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args: any[]) {
+      window.dataLayer.push(args);
+    }
+    (window as any).gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  };
+};
+
+// Load Google AdSense
+const loadGoogleAdSense = () => {
+  if (document.getElementById('adsense-script')) return;
+  
+  const script = document.createElement('script');
+  script.id = 'adsense-script';
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`;
+  script.async = true;
+  script.crossOrigin = 'anonymous';
+  document.head.appendChild(script);
+};
+
+// Load all tracking scripts
+const loadTrackingScripts = () => {
+  loadGoogleAnalytics();
+  loadGoogleAdSense();
+};
+
+// Remove tracking scripts and cookies
+const removeTrackingScripts = () => {
+  // Remove scripts
+  const gaScript = document.getElementById('ga-script');
+  const adsenseScript = document.getElementById('adsense-script');
+  if (gaScript) gaScript.remove();
+  if (adsenseScript) adsenseScript.remove();
+  
+  // Clear GA cookies
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const name = cookie.split('=')[0].trim();
+    if (name.startsWith('_ga') || name.startsWith('_gid')) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+  }
+};
+
+declare global {
+  interface Window {
+    dataLayer: any[];
+  }
+}
 
 export const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
-    if (!consent) {
-      // Delay showing banner for better UX
+    
+    if (consent === "accepted") {
+      // User previously accepted - load scripts
+      loadTrackingScripts();
+    } else if (consent === "declined") {
+      // User previously declined - ensure scripts are not loaded
+      removeTrackingScripts();
+    } else {
+      // No consent yet - show banner
       const timer = setTimeout(() => setShowBanner(true), 1500);
       return () => clearTimeout(timer);
     }
@@ -17,11 +90,13 @@ export const CookieConsent = () => {
 
   const handleAccept = () => {
     localStorage.setItem("cookie-consent", "accepted");
+    loadTrackingScripts();
     setShowBanner(false);
   };
 
   const handleDecline = () => {
     localStorage.setItem("cookie-consent", "declined");
+    removeTrackingScripts();
     setShowBanner(false);
   };
 
