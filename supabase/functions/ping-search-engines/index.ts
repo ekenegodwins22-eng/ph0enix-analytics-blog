@@ -18,21 +18,44 @@ interface PingResult {
 
 // Create JWT for Google Service Account authentication
 async function createGoogleJWT(): Promise<string> {
-  const serviceAccountKey = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY');
+  let serviceAccountKey = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY');
   if (!serviceAccountKey) {
     throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured');
   }
 
-  // Handle potential escaped JSON string (double-encoded)
+  // Debug: Log first 50 chars to see the format
+  console.log('Service account key starts with:', serviceAccountKey.substring(0, 50));
+  console.log('Service account key length:', serviceAccountKey.length);
+
+  // Handle various input formats
   let credentials;
   try {
+    // Remove any surrounding whitespace
+    serviceAccountKey = serviceAccountKey.trim();
+    
+    // If wrapped in single or double quotes, remove them
+    if ((serviceAccountKey.startsWith('"') && serviceAccountKey.endsWith('"')) ||
+        (serviceAccountKey.startsWith("'") && serviceAccountKey.endsWith("'"))) {
+      serviceAccountKey = serviceAccountKey.slice(1, -1);
+    }
+    
+    // Replace literal newlines/carriage returns with escaped versions for JSON parsing
+    // This handles keys pasted with actual line breaks
+    serviceAccountKey = serviceAccountKey
+      .replace(/\r\n/g, '\\n')
+      .replace(/\r/g, '\\n')  
+      .replace(/\n/g, '\\n')
+      .replace(/\t/g, '\\t');
+    
     credentials = JSON.parse(serviceAccountKey);
+    
     // If the result is still a string, it was double-encoded
     if (typeof credentials === 'string') {
       credentials = JSON.parse(credentials);
     }
   } catch (e) {
     console.error('Failed to parse service account key:', e);
+    console.error('Key preview:', serviceAccountKey.substring(0, 100));
     throw new Error('Invalid GOOGLE_SERVICE_ACCOUNT_KEY format. Ensure it is valid JSON.');
   }
   
