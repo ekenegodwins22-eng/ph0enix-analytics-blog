@@ -68,5 +68,9 @@ Allow: /
 # Sitemap location
 Sitemap: https://www.senseiphoenix.name.ng/sitemap.xml
 
+# Dynamic content rendering endpoint for crawlers
+# Blog posts and dynamic pages are rendered at:
+# https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/og-render?path=/blog/[slug]
+
 # Host
 Host: https://www.senseiphoenix.name.ng

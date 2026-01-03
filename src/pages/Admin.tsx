@@ -134,7 +134,9 @@ const Admin = () => {
     };
 
     try {
-      if ("id" in editingPost && editingPost.id) {
+      const isNewPost = !("id" in editingPost && editingPost.id);
+      
+      if (!isNewPost) {
         const { error } = await supabase
           .from("blog_posts")
           .update(postData)
@@ -145,6 +147,11 @@ const Admin = () => {
         const { error } = await supabase.from("blog_posts").insert([postData]);
         if (error) throw error;
         toast({ title: "Success", description: "Post created successfully" });
+        
+        // Ping search engines for new published posts
+        if (postData.published) {
+          pingSearchEngines(slug);
+        }
       }
 
       setIsDialogOpen(false);
@@ -154,6 +161,24 @@ const Admin = () => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const pingSearchEngines = async (slug: string) => {
+    try {
+      const response = await supabase.functions.invoke('ping-search-engines', {
+        body: { slug, action: 'new_post' }
+      });
+      
+      if (response.data?.success) {
+        toast({ 
+          title: "Search Engines Notified", 
+          description: "Google and Bing have been pinged about your new post" 
+        });
+      }
+      console.log('Search engine ping results:', response.data);
+    } catch (error) {
+      console.error('Failed to ping search engines:', error);
     }
   };
 
@@ -172,11 +197,18 @@ const Admin = () => {
 
   const togglePublished = async (post: BlogPost) => {
     try {
+      const newPublishedState = !post.published;
       const { error } = await supabase
         .from("blog_posts")
-        .update({ published: !post.published })
+        .update({ published: newPublishedState })
         .eq("id", post.id);
       if (error) throw error;
+      
+      // Ping search engines when a post is published for the first time
+      if (newPublishedState) {
+        pingSearchEngines(post.slug);
+      }
+      
       fetchPosts();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
