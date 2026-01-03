@@ -1,14 +1,50 @@
 {
   "rewrites": [
-    { 
-      "source": "/sitemap.xml", 
+    {
+      "source": "/sitemap.xml",
       "destination": "https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/sitemap"
+    },
+    {
+      "source": "/blog/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawl|spider|slurp|Mediapartners|facebookexternalhit|LinkedInBot|Twitterbot|TelegramBot|GPTBot|ChatGPT|Anthropic|Claude|Perplexity|Bingbot|Googlebot|Applebot|DuckDuckBot|Slackbot|Discordbot|WhatsApp|Embedly|Quora|redditbot|Baiduspider|YandexBot|Sogou|Exabot|ia_archiver|archive.org_bot|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Screaming Frog|Grok).*"
+        }
+      ],
+      "destination": "https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/og-render?path=/blog/:slug"
+    },
+    {
+      "source": "/:path((?:about|resume|bitget|privacy|terms|disclaimer))",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawl|spider|slurp|Mediapartners|facebookexternalhit|LinkedInBot|Twitterbot|TelegramBot|GPTBot|ChatGPT|Anthropic|Claude|Perplexity|Bingbot|Googlebot|Applebot|DuckDuckBot|Slackbot|Discordbot|WhatsApp|Embedly|Quora|redditbot|Baiduspider|YandexBot|Sogou|Exabot|ia_archiver|archive.org_bot|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Screaming Frog|Grok).*"
+        }
+      ],
+      "destination": "https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/og-render?path=/:path"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(bot|crawl|spider|slurp|Mediapartners|facebookexternalhit|LinkedInBot|Twitterbot|TelegramBot|GPTBot|ChatGPT|Anthropic|Claude|Perplexity|Bingbot|Googlebot|Applebot|DuckDuckBot|Slackbot|Discordbot|WhatsApp|Embedly|Quora|redditbot|Baiduspider|YandexBot|Sogou|Exabot|ia_archiver|archive.org_bot|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Screaming Frog|Grok).*"
+        }
+      ],
+      "destination": "https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/og-render?path=/"
     },
     {
       "source": "/og/:path*",
       "destination": "https://jzvgndwxfhscbpiaaxnq.supabase.co/functions/v1/og-render?path=/:path*"
     },
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ],
   "headers": [
     {
