@@ -23,7 +23,20 @@ async function createGoogleJWT(): Promise<string> {
     throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured');
   }
 
-  const credentials = JSON.parse(serviceAccountKey);
+  // Handle potential escaped JSON string (double-encoded)
+  let credentials;
+  try {
+    credentials = JSON.parse(serviceAccountKey);
+    // If the result is still a string, it was double-encoded
+    if (typeof credentials === 'string') {
+      credentials = JSON.parse(credentials);
+    }
+  } catch (e) {
+    console.error('Failed to parse service account key:', e);
+    throw new Error('Invalid GOOGLE_SERVICE_ACCOUNT_KEY format. Ensure it is valid JSON.');
+  }
+  
+  console.log('Service account email:', credentials.client_email);
   const now = Math.floor(Date.now() / 1000);
   
   const header = {
