@@ -16,25 +16,137 @@ interface PingResult {
   message?: string;
 }
 
-async function pingGoogle(): Promise<PingResult> {
+// Create JWT for Google Service Account authentication
+async function createGoogleJWT(): Promise<string> {
+  const serviceAccountKey = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_KEY');
+  if (!serviceAccountKey) {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured');
+  }
+
+  const credentials = JSON.parse(serviceAccountKey);
+  const now = Math.floor(Date.now() / 1000);
+  
+  const header = {
+    alg: 'RS256',
+    typ: 'JWT'
+  };
+  
+  const payload = {
+    iss: credentials.client_email,
+    scope: 'https://www.googleapis.com/auth/indexing',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600 // 1 hour
+  };
+
+  const encoder = new TextEncoder();
+  const headerB64 = btoa(JSON.stringify(header)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  const payloadB64 = btoa(JSON.stringify(payload)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  const signatureInput = `${headerB64}.${payloadB64}`;
+
+  // Import the private key and sign
+  const pemContents = credentials.private_key
+    .replace(/-----BEGIN PRIVATE KEY-----/, '')
+    .replace(/-----END PRIVATE KEY-----/, '')
+    .replace(/\s/g, '');
+  
+  const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    'pkcs8',
+    binaryKey,
+    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const signature = await crypto.subtle.sign(
+    'RSASSA-PKCS1-v1_5',
+    cryptoKey,
+    encoder.encode(signatureInput)
+  );
+
+  const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+
+  return `${signatureInput}.${signatureB64}`;
+}
+
+async function getGoogleAccessToken(): Promise<string> {
+  const jwt = await createGoogleJWT();
+  
+  const response = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('Google OAuth error:', error);
+    throw new Error(`Failed to get access token: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+async function pingGoogleIndexingAPI(url: string, type: 'URL_UPDATED' | 'URL_DELETED' = 'URL_UPDATED'): Promise<PingResult> {
   try {
-    // Google Indexing API ping (sitemap submission)
+    const accessToken = await getGoogleAccessToken();
+    
+    const response = await fetch('https://indexing.googleapis.com/v3/urlNotifications:publish', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        url: url,
+        type: type
+      })
+    });
+
+    const responseText = await response.text();
+    console.log(`Google Indexing API response for ${url}: ${response.status} - ${responseText}`);
+
+    return {
+      engine: 'Google Indexing API',
+      success: response.status === 200,
+      status: response.status,
+      message: response.status === 200 ? 'URL submitted for instant indexing' : responseText
+    };
+  } catch (error) {
+    console.error('Google Indexing API error:', error);
+    return {
+      engine: 'Google Indexing API',
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+async function pingGoogleSitemap(): Promise<PingResult> {
+  try {
+    // Legacy sitemap ping (still works as backup)
     const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(SITEMAP_URL)}`;
     const response = await fetch(pingUrl, { method: 'GET' });
     
-    console.log(`Google ping response: ${response.status}`);
+    console.log(`Google sitemap ping response: ${response.status}`);
     
-    // Google returns 200 even if sitemap isn't immediately processed
     return {
-      engine: 'Google',
+      engine: 'Google Sitemap Ping',
       success: response.status === 200 || response.status === 204,
       status: response.status,
       message: 'Sitemap ping sent'
     };
   } catch (error) {
-    console.error('Google ping error:', error);
+    console.error('Google sitemap ping error:', error);
     return {
-      engine: 'Google',
+      engine: 'Google Sitemap Ping',
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error'
     };
@@ -123,13 +235,14 @@ Deno.serve(async (req) => {
       
       console.log(`Pinging search engines for new post: ${postUrl}`);
       
-      // Ping all search engines in parallel
-      const [googleResult, indexNowResult] = await Promise.all([
-        pingGoogle(),
+      // Ping all search engines in parallel - use Google Indexing API for instant indexing
+      const [googleIndexingResult, googleSitemapResult, indexNowResult] = await Promise.all([
+        pingGoogleIndexingAPI(postUrl),
+        pingGoogleSitemap(),
         pingBingIndexNow([postUrl])
       ]);
       
-      results.push(googleResult, indexNowResult);
+      results.push(googleIndexingResult, googleSitemapResult, indexNowResult);
       
     } else if (action === 'sitemap_update' || action === 'weekly_ping') {
       // Ping sitemap updates with all URLs
@@ -138,12 +251,25 @@ Deno.serve(async (req) => {
       const allUrls = await getAllBlogUrls();
       console.log(`Submitting ${allUrls.length} URLs to search engines`);
       
-      const [googleResult, indexNowResult] = await Promise.all([
-        pingGoogle(),
-        pingBingIndexNow(allUrls)
+      // For bulk updates, ping Google Indexing API for each blog URL (limit to 200/day)
+      const blogUrls = allUrls.filter(url => url.includes('/blog/'));
+      const googleIndexingPromises = blogUrls.slice(0, 50).map(url => pingGoogleIndexingAPI(url));
+      
+      const [googleSitemapResult, indexNowResult, ...googleIndexingResults] = await Promise.all([
+        pingGoogleSitemap(),
+        pingBingIndexNow(allUrls),
+        ...googleIndexingPromises
       ]);
       
-      results.push(googleResult, indexNowResult);
+      // Summarize Google Indexing API results
+      const successCount = googleIndexingResults.filter(r => r.success).length;
+      const googleIndexingSummary: PingResult = {
+        engine: 'Google Indexing API',
+        success: successCount > 0,
+        message: `${successCount}/${googleIndexingResults.length} URLs submitted for instant indexing`
+      };
+      
+      results.push(googleIndexingSummary, googleSitemapResult, indexNowResult);
     } else {
       return new Response(
         JSON.stringify({ error: 'Invalid action. Use "new_post" with slug, "sitemap_update", or "weekly_ping"' }),
