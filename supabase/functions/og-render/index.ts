@@ -22,7 +22,36 @@ interface BlogPost {
   author: string | null
 }
 
-// Generate HTML with proper meta tags for crawlers
+// Convert markdown to plain text for crawlers
+function markdownToText(markdown: string): string {
+  return markdown
+    // Remove headers
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove bold/italic
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    // Remove links but keep text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove images
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    // Remove blockquotes
+    .replace(/^>\s+/gm, '')
+    // Remove horizontal rules
+    .replace(/^---+$/gm, '')
+    // Remove list markers
+    .replace(/^[\s]*[-*+]\s+/gm, '• ')
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    // Clean up extra whitespace
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
+// Generate HTML with proper meta tags AND full content for crawlers
 function generateHTML(meta: {
   title: string
   description: string
@@ -34,8 +63,11 @@ function generateHTML(meta: {
   author?: string
   section?: string
   tags?: string[]
+  content?: string
+  readTime?: string
 }) {
   const tagsHtml = meta.tags?.map(tag => `<meta property="article:tag" content="${escapeHtml(tag)}" />`).join('\n    ') || ''
+  const contentHtml = meta.content ? `<article>${meta.content.split('\n').map(p => p.trim() ? `<p>${escapeHtml(p)}</p>` : '').join('\n      ')}</article>` : ''
   
   return `<!DOCTYPE html>
 <html lang="en">
@@ -77,12 +109,23 @@ function generateHTML(meta: {
   <meta name="twitter:creator" content="@sensei_phoenixz" />
 </head>
 <body>
-  <main>
+  <header>
     <h1>${escapeHtml(meta.title)}</h1>
+    <p><strong>By:</strong> ${escapeHtml(meta.author || 'PHOENIX THE WEB3 SENSEI')}</p>
+    ${meta.readTime ? `<p><strong>Read time:</strong> ${escapeHtml(meta.readTime)}</p>` : ''}
+    ${meta.section ? `<p><strong>Category:</strong> ${escapeHtml(meta.section)}</p>` : ''}
+    ${meta.tags?.length ? `<p><strong>Tags:</strong> ${meta.tags.map(t => escapeHtml(t)).join(', ')}</p>` : ''}
+  </header>
+  <main>
     <p>${escapeHtml(meta.description)}</p>
     <img src="${meta.image}" alt="${escapeHtml(meta.title)}" />
-    <p>Visit: <a href="${meta.url}">${meta.url}</a></p>
+    ${contentHtml}
+    <p><a href="${meta.url}">Read full article at ${meta.url}</a></p>
   </main>
+  <footer>
+    <p>© PHOENIX THE WEB3 SENSEI - Web3 Community Builder & Crypto Trading Expert</p>
+    <p>Website: <a href="${SITE_URL}">${SITE_URL}</a></p>
+  </footer>
 </body>
 </html>`
 }
@@ -166,6 +209,9 @@ Deno.serve(async (req) => {
       const blogPost = post as BlogPost
       const fullUrl = `${SITE_URL}/blog/${blogPost.slug}`
       
+      // Convert markdown content to plain text for AI crawlers
+      const plainTextContent = markdownToText(blogPost.content || '')
+      
       const html = generateHTML({
         title: `${blogPost.title} | PHOENIX THE WEB3 SENSEI Blog`,
         description: blogPost.description,
@@ -174,9 +220,11 @@ Deno.serve(async (req) => {
         type: 'article',
         publishedTime: new Date(blogPost.created_at).toISOString(),
         modifiedTime: new Date(blogPost.updated_at).toISOString(),
-        author: 'PHOENIX THE WEB3 SENSEI',
+        author: blogPost.author || 'PHOENIX THE WEB3 SENSEI',
         section: blogPost.category,
         tags: blogPost.tags || [],
+        content: plainTextContent,
+        readTime: blogPost.read_time || undefined,
       })
       
       return new Response(html, {
