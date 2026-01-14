@@ -62,6 +62,117 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_settings: {
+        Row: {
+          auto_fetch_enabled: boolean
+          created_at: string
+          default_category: string | null
+          fetch_interval_hours: number | null
+          id: string
+          telegram_user_id: number
+          updated_at: string
+          writing_style: string | null
+        }
+        Insert: {
+          auto_fetch_enabled?: boolean
+          created_at?: string
+          default_category?: string | null
+          fetch_interval_hours?: number | null
+          id?: string
+          telegram_user_id: number
+          updated_at?: string
+          writing_style?: string | null
+        }
+        Update: {
+          auto_fetch_enabled?: boolean
+          created_at?: string
+          default_category?: string | null
+          fetch_interval_hours?: number | null
+          id?: string
+          telegram_user_id?: number
+          updated_at?: string
+          writing_style?: string | null
+        }
+        Relationships: []
+      }
+      draft_posts: {
+        Row: {
+          category: string | null
+          content: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          source_name: string | null
+          source_url: string | null
+          status: string
+          tags: string[] | null
+          telegram_user_id: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          source_name?: string | null
+          source_url?: string | null
+          status?: string
+          tags?: string[] | null
+          telegram_user_id: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          source_name?: string | null
+          source_url?: string | null
+          status?: string
+          tags?: string[] | null
+          telegram_user_id?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          telegram_chat_id: number
+          telegram_user_id: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          telegram_chat_id: number
+          telegram_user_id: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          telegram_chat_id?: number
+          telegram_user_id?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
