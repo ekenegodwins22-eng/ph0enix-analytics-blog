@@ -167,23 +167,27 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     return;
   }
 
-  // Auth check
-  const { data: session } = await supabase
-    .from('telegram_sessions')
-    .select('*')
-    .eq('telegram_user_id', userId)
-    .eq('is_active', true)
-    .single();
+  // Auth check — allow owner UID directly, others need /login
+  const isOwner = userId === ADMIN_TELEGRAM_UID;
 
-  if (!session) {
-    await sendTg(telegramApi, chatId, '🔒 Please authenticate first: /login your@email.com');
-    return;
-  }
+  if (!isOwner) {
+    const { data: session } = await supabase
+      .from('telegram_sessions')
+      .select('*')
+      .eq('telegram_user_id', userId)
+      .eq('is_active', true)
+      .single();
 
-  const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: session.user_id, _role: 'admin' });
-  if (!isAdmin) {
-    await sendTg(telegramApi, chatId, '⛔ Admin privileges required.');
-    return;
+    if (!session) {
+      await sendTg(telegramApi, chatId, '🔒 Please authenticate first: /login your@email.com');
+      return;
+    }
+
+    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: session.user_id, _role: 'admin' });
+    if (!isAdmin) {
+      await sendTg(telegramApi, chatId, '⛔ Admin privileges required.');
+      return;
+    }
   }
 
   if (text.startsWith('/newpost')) {
