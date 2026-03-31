@@ -314,11 +314,8 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/approve', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /approve abc12345'); return; }
 
-    const { data: drafts } = await supabase.from('draft_posts').select('*')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
-    const d = drafts[0];
+    const d = await findDraftByShortId(supabase, userId, shortId);
+    if (!d) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
     if (!d.title || !d.content || !d.description) {
       await sendTg(telegramApi, chatId, '❌ Draft incomplete. Use /edit to add missing content.');
       return;
