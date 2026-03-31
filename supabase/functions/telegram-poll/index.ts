@@ -276,11 +276,8 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/preview', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /preview abc12345'); return; }
     
-    const { data: drafts } = await supabase.from('draft_posts').select('*')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
-    const d = drafts[0];
+    const d = await findDraftByShortId(supabase, userId, shortId);
+    if (!d) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
     const preview = d.content?.substring(0, 3000) || 'No content';
     await sendTg(telegramApi, chatId,
       `📝 <b>${d.title || 'Untitled'}</b>\n📂 ${d.category}\n🏷️ ${d.tags?.join(', ')}\n📰 ${d.source_name || 'Original'}\n\n` +
