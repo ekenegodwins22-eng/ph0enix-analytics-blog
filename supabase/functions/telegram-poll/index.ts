@@ -351,7 +351,9 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
   if (text.startsWith('/delete')) {
     const shortId = text.replace('/delete', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /delete abc12345'); return; }
-    await supabase.from('draft_posts').delete().eq('telegram_user_id', userId).ilike('id', `${shortId}%`);
+    const draft = await findDraftByShortId(supabase, userId, shortId, 'id');
+    if (!draft) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
+    await supabase.from('draft_posts').delete().eq('id', draft.id);
     await sendTg(telegramApi, chatId, '🗑️ Draft deleted.');
     return;
   }
