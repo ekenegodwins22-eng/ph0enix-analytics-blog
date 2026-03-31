@@ -126,6 +126,19 @@ async function sendTg(telegramApi: string, chatId: number, text: string, parseMo
   }
 }
 
+async function findDraftByShortId(supabase: any, userId: number, shortId: string, selectFields = '*') {
+  // ilike doesn't work on UUID columns, so we fetch recent drafts and filter in JS
+  const { data: drafts } = await supabase
+    .from('draft_posts')
+    .select(selectFields)
+    .eq('telegram_user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (!drafts?.length) return null;
+  return drafts.find((d: any) => d.id.startsWith(shortId)) || null;
+}
+
 async function processCommand(supabase: any, chatId: number, userId: number, text: string, telegramApi: string, lovableKey: string) {
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 
@@ -263,11 +276,8 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/preview', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /preview abc12345'); return; }
     
-    const { data: drafts } = await supabase.from('draft_posts').select('*')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
-    const d = drafts[0];
+    const d = await findDraftByShortId(supabase, userId, shortId);
+    if (!d) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
     const preview = d.content?.substring(0, 3000) || 'No content';
     await sendTg(telegramApi, chatId,
       `📝 <b>${d.title || 'Untitled'}</b>\n📂 ${d.category}\n🏷️ ${d.tags?.join(', ')}\n📰 ${d.source_name || 'Original'}\n\n` +
@@ -280,17 +290,15 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/edit', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /edit abc12345'); return; }
 
-    const { data: drafts } = await supabase.from('draft_posts').select('id, title')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
+    const draft = await findDraftByShortId(supabase, userId, shortId, 'id, title');
+    if (!draft) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
 
     await supabase.from('telegram_conversation_state')
-      .upsert({ telegram_user_id: userId, current_draft_id: drafts[0].id, mode: 'editing' }, { onConflict: 'telegram_user_id' });
-    await supabase.from('draft_posts').update({ status: 'editing' }).eq('id', drafts[0].id);
+      .upsert({ telegram_user_id: userId, current_draft_id: draft.id, mode: 'editing' }, { onConflict: 'telegram_user_id' });
+    await supabase.from('draft_posts').update({ status: 'editing' }).eq('id', draft.id);
 
     await sendTg(telegramApi, chatId,
-      `✏️ <b>Edit Mode: ${drafts[0].title || 'Untitled'}</b>\n\nType your edits naturally:\n• "Make title more catchy"\n• "Add DeFi risks section"\n• "Make it shorter"\n\n/done to exit`
+      `✏️ <b>Edit Mode: ${draft.title || 'Untitled'}</b>\n\nType your edits naturally:\n• "Make title more catchy"\n• "Add DeFi risks section"\n• "Make it shorter"\n\n/done to exit`
     );
     return;
   }
@@ -306,11 +314,8 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/approve', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /approve abc12345'); return; }
 
-    const { data: drafts } = await supabase.from('draft_posts').select('*')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
-    const d = drafts[0];
+    const d = await findDraftByShortId(supabase, userId, shortId);
+    if (!d) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
     if (!d.title || !d.content || !d.description) {
       await sendTg(telegramApi, chatId, '❌ Draft incomplete. Use /edit to add missing content.');
       return;
@@ -346,7 +351,9 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
   if (text.startsWith('/delete')) {
     const shortId = text.replace('/delete', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /delete abc12345'); return; }
-    await supabase.from('draft_posts').delete().eq('telegram_user_id', userId).ilike('id', `${shortId}%`);
+    const draft = await findDraftByShortId(supabase, userId, shortId, 'id');
+    if (!draft) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
+    await supabase.from('draft_posts').delete().eq('id', draft.id);
     await sendTg(telegramApi, chatId, '🗑️ Draft deleted.');
     return;
   }
