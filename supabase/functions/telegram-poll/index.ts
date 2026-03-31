@@ -126,6 +126,19 @@ async function sendTg(telegramApi: string, chatId: number, text: string, parseMo
   }
 }
 
+async function findDraftByShortId(supabase: any, userId: number, shortId: string, selectFields = '*') {
+  // ilike doesn't work on UUID columns, so we fetch recent drafts and filter in JS
+  const { data: drafts } = await supabase
+    .from('draft_posts')
+    .select(selectFields)
+    .eq('telegram_user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (!drafts?.length) return null;
+  return drafts.find((d: any) => d.id.startsWith(shortId)) || null;
+}
+
 async function processCommand(supabase: any, chatId: number, userId: number, text: string, telegramApi: string, lovableKey: string) {
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 
