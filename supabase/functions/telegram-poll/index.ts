@@ -290,17 +290,15 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const shortId = text.replace('/edit', '').trim();
     if (!shortId) { await sendTg(telegramApi, chatId, '❌ Usage: /edit abc12345'); return; }
 
-    const { data: drafts } = await supabase.from('draft_posts').select('id, title')
-      .eq('telegram_user_id', userId).ilike('id', `${shortId}%`).limit(1);
-
-    if (!drafts?.length) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
+    const draft = await findDraftByShortId(supabase, userId, shortId, 'id, title');
+    if (!draft) { await sendTg(telegramApi, chatId, '❌ Draft not found.'); return; }
 
     await supabase.from('telegram_conversation_state')
-      .upsert({ telegram_user_id: userId, current_draft_id: drafts[0].id, mode: 'editing' }, { onConflict: 'telegram_user_id' });
-    await supabase.from('draft_posts').update({ status: 'editing' }).eq('id', drafts[0].id);
+      .upsert({ telegram_user_id: userId, current_draft_id: draft.id, mode: 'editing' }, { onConflict: 'telegram_user_id' });
+    await supabase.from('draft_posts').update({ status: 'editing' }).eq('id', draft.id);
 
     await sendTg(telegramApi, chatId,
-      `✏️ <b>Edit Mode: ${drafts[0].title || 'Untitled'}</b>\n\nType your edits naturally:\n• "Make title more catchy"\n• "Add DeFi risks section"\n• "Make it shorter"\n\n/done to exit`
+      `✏️ <b>Edit Mode: ${draft.title || 'Untitled'}</b>\n\nType your edits naturally:\n• "Make title more catchy"\n• "Add DeFi risks section"\n• "Make it shorter"\n\n/done to exit`
     );
     return;
   }
