@@ -98,7 +98,7 @@ export default function Blog() {
           {/* Category Filter */}
           <div className="mb-12">
             <CategoryFilter
-              categories={categories}
+              categories={STATIC_CATEGORIES}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
             />
