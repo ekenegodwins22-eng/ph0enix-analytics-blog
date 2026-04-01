@@ -266,6 +266,12 @@ Do NOT copy the original — rewrite with your own analysis, insights, and expan
 The article is from the "${article.category}" category.
 ${trendingContext ? `\nTrending context:\n${trendingContext}` : ''}
 
+IMPORTANT SEO RULES:
+- Naturally mention "CryptoPhoenixz" or "Phoenix the web3 sensei" once in the article body.
+- Include relevant internal links using markdown format: [related topic](https://www.senseiphoenix.name.ng/blog) where appropriate.
+- Use semantic headers (##, ###) for better SEO structure.
+- End with a brief call-to-action encouraging readers to explore more on senseiphoenix.name.ng.
+
 Return ONLY valid JSON:
 {
   "title": "Unique SEO title (60 chars max)",
@@ -313,6 +319,11 @@ Return ONLY valid JSON:
         const wordCount = (post.content || '').split(/\s+/).length;
         const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
 
+        // Always include branding tags for SEO
+        const brandingTags = ['CryptoPhoenixz', 'Phoenix the web3 sensei', 'sensei_phoenixz'];
+        const rawTags: string[] = post.tags || [];
+        const mergedTags = [...new Set([...rawTags, ...brandingTags])];
+
         // Generate featured image
         let imageUrl: string | null = null;
         try {
@@ -334,8 +345,8 @@ Return ONLY valid JSON:
             description: post.description,
             content: post.content,
             category: post.category || article.category,
-            tags: post.tags || [],
-            author: 'PH0ENIX_WEB3',
+            tags: mergedTags,
+            author: 'PHOENIX THE WEB3 SENSEI',
             read_time: readTime,
             published: true,
             image: imageUrl,
@@ -349,7 +360,7 @@ Return ONLY valid JSON:
               description: post.description,
               content: post.content,
               category: post.category || article.category,
-              tags: post.tags || [],
+              tags: mergedTags,
               source_url: article.link,
               source_name: article.source,
               status: 'published',
@@ -365,7 +376,7 @@ Return ONLY valid JSON:
             description: post.description,
             content: post.content,
             category: post.category || article.category,
-            tags: post.tags || [],
+            tags: mergedTags,
             source_url: article.link,
             source_name: article.source,
             status: 'pending',

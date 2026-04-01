@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
-const categories = ["All", "Guides", "Trading", "DeFi", "News", "Analysis", "Tutorials"];
+const STATIC_CATEGORIES = ["All", "Crypto", "World News", "Technology", "Science", "Finance", "AI & Innovation", "Guides", "Trading", "DeFi", "News", "Analysis", "Tutorials"];
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -98,7 +98,7 @@ export default function Blog() {
           {/* Category Filter */}
           <div className="mb-12">
             <CategoryFilter
-              categories={categories}
+              categories={STATIC_CATEGORIES}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
             />
