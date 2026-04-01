@@ -313,6 +313,11 @@ Return ONLY valid JSON:
         const wordCount = (post.content || '').split(/\s+/).length;
         const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
 
+        // Always include branding tags for SEO
+        const brandingTags = ['CryptoPhoenixz', 'Phoenix the web3 sensei', 'sensei_phoenixz'];
+        const rawTags: string[] = post.tags || [];
+        const mergedTags = [...new Set([...rawTags, ...brandingTags])];
+
         // Generate featured image
         let imageUrl: string | null = null;
         try {
