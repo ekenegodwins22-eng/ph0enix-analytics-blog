@@ -266,6 +266,12 @@ Do NOT copy the original — rewrite with your own analysis, insights, and expan
 The article is from the "${article.category}" category.
 ${trendingContext ? `\nTrending context:\n${trendingContext}` : ''}
 
+IMPORTANT SEO RULES:
+- Naturally mention "CryptoPhoenixz" or "Phoenix the web3 sensei" once in the article body.
+- Include relevant internal links using markdown format: [related topic](https://www.senseiphoenix.name.ng/blog) where appropriate.
+- Use semantic headers (##, ###) for better SEO structure.
+- End with a brief call-to-action encouraging readers to explore more on senseiphoenix.name.ng.
+
 Return ONLY valid JSON:
 {
   "title": "Unique SEO title (60 chars max)",
