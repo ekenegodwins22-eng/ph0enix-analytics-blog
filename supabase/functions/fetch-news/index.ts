@@ -354,7 +354,7 @@ Return ONLY valid JSON:
               description: post.description,
               content: post.content,
               category: post.category || article.category,
-              tags: post.tags || [],
+              tags: mergedTags,
               source_url: article.link,
               source_name: article.source,
               status: 'published',
