@@ -6,25 +6,18 @@ const corsHeaders = {
 };
 
 const RSS_FEEDS = [
-  // Crypto & Web3
   { name: 'CoinDesk', url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', category: 'Crypto' },
   { name: 'Decrypt', url: 'https://decrypt.co/feed', category: 'Crypto' },
   { name: 'CoinTelegraph', url: 'https://cointelegraph.com/rss', category: 'Crypto' },
-  // World News
   { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml', category: 'World News' },
   { name: 'Reuters', url: 'https://www.reutersagency.com/feed/', category: 'World News' },
-  // Tech
   { name: 'TechCrunch', url: 'https://techcrunch.com/feed/', category: 'Technology' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Technology' },
-  // Science & Health
   { name: 'Science Daily', url: 'https://www.sciencedaily.com/rss/all.xml', category: 'Science' },
-  // Business & Finance
   { name: 'CNBC', url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114', category: 'Finance' },
-  // AI & Innovation
   { name: 'MIT Tech Review', url: 'https://www.technologyreview.com/feed/', category: 'AI & Innovation' },
 ];
 
-// Rotate topics daily so we get variety
 const SERPAPI_TOPICS = [
   'world statistics today',
   'global economy news today',
@@ -38,6 +31,75 @@ const SERPAPI_TOPICS = [
   'global health statistics',
 ];
 
+async function generateAndUploadImage(
+  title: string,
+  category: string,
+  slug: string,
+  LOVABLE_API_KEY: string,
+  supabase: any,
+): Promise<string | null> {
+  try {
+    const prompt = `Create a professional, modern blog header image for an article titled "${title}" in the ${category} category. The image should be visually striking, editorial-quality, with bold colors and clean composition. No text in the image. Photorealistic digital art style.`;
+
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-3.1-flash-image-preview',
+        messages: [{ role: 'user', content: prompt }],
+        modalities: ['image', 'text'],
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      console.error('Image generation failed:', aiResponse.status);
+      return null;
+    }
+
+    const aiData = await aiResponse.json();
+    const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (!imageUrl) return null;
+
+    // Extract base64 data
+    const base64Match = imageUrl.match(/^data:image\/(\w+);base64,(.+)$/);
+    if (!base64Match) return null;
+
+    const ext = base64Match[1] === 'jpeg' ? 'jpg' : base64Match[1];
+    const base64Data = base64Match[2];
+
+    // Decode base64 to Uint8Array
+    const binaryStr = atob(base64Data);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+
+    const filePath = `${slug}.${ext}`;
+    const contentType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+
+    const { error: uploadErr } = await supabase.storage
+      .from('blog-images')
+      .upload(filePath, bytes, { contentType, upsert: true });
+
+    if (uploadErr) {
+      console.error('Upload error:', uploadErr);
+      return null;
+    }
+
+    const { data: publicUrl } = supabase.storage
+      .from('blog-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl?.publicUrl || null;
+  } catch (e) {
+    console.error('Image gen/upload error:', e);
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -46,14 +108,17 @@ Deno.serve(async (req) => {
   try {
     let telegram_user_id: number;
     let auto_mode = false;
+    let batch_size = 2; // How many posts this invocation should create
 
     try {
       const body = await req.json();
-      telegram_user_id = body.telegram_user_id;
+      telegram_user_id = body.telegram_user_id || 7444500411;
       auto_mode = body.auto_mode || false;
+      batch_size = body.batch_size || 2;
     } catch {
-      telegram_user_id = 7444500411; // fallback for cron
+      telegram_user_id = 7444500411;
       auto_mode = true;
+      batch_size = 2;
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -65,7 +130,6 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get user settings
     const { data: settings } = await supabase
       .from('bot_settings')
       .select('writing_style, default_category')
@@ -74,16 +138,14 @@ Deno.serve(async (req) => {
 
     const writingStyle = settings?.writing_style || 'Professional writer covering crypto, tech, world news, science, and finance';
 
-    // Step 1: Fetch from diverse RSS feeds
+    // Fetch RSS feeds
     const articles: any[] = [];
-
     for (const feed of RSS_FEEDS) {
       try {
         const res = await fetch(feed.url, {
           headers: { 'User-Agent': 'SenseiPhoenix Blog Bot/1.0' },
         });
         const xml = await res.text();
-
         const items = xml.match(/<item>[\s\S]*?<\/item>/gi)
           || xml.match(/<entry>[\s\S]*?<\/entry>/gi)
           || [];
@@ -114,8 +176,19 @@ Deno.serve(async (req) => {
             if (existing && existing.length > 0) continue;
           }
 
+          // Also check blog_posts to avoid duplicates
+          const cleanTitle = title.replace(/<[^>]*>/g, '').trim();
+          if (cleanTitle) {
+            const { data: existingPost } = await supabase
+              .from('blog_posts')
+              .select('id')
+              .ilike('title', `%${cleanTitle.substring(0, 30)}%`)
+              .limit(1);
+            if (existingPost && existingPost.length > 0) continue;
+          }
+
           articles.push({
-            title: title.replace(/<[^>]*>/g, '').trim(),
+            title: cleanTitle,
             link,
             description: description.replace(/<[^>]*>/g, '').substring(0, 500),
             source: feed.name,
@@ -123,20 +196,21 @@ Deno.serve(async (req) => {
           });
         }
       } catch (e) {
-        console.error(`RSS fetch error for ${feed.name}:`, e);
+        console.error(`RSS error ${feed.name}:`, e);
       }
     }
 
-    // Step 2: Enrich with SerpAPI trending across diverse topics
+    // Enrich with SerpAPI
     let trendingContext = '';
     if (SERPAPI_KEY) {
       try {
         const dayIndex = new Date().getDay();
-        const topic = SERPAPI_TOPICS[dayIndex % SERPAPI_TOPICS.length];
+        const hourIndex = new Date().getHours();
+        const topicIdx = (dayIndex * 3 + Math.floor(hourIndex / 8)) % SERPAPI_TOPICS.length;
+        const topic = SERPAPI_TOPICS[topicIdx];
         const searchUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(topic)}&api_key=${SERPAPI_KEY}&num=5&engine=google&tbm=nws`;
         const searchRes = await fetch(searchUrl);
         const searchData = await searchRes.json();
-
         if (searchData.news_results) {
           trendingContext = searchData.news_results
             .slice(0, 5)
@@ -144,29 +218,34 @@ Deno.serve(async (req) => {
             .join('\n');
         }
       } catch (e) {
-        console.error('SerpAPI trending error:', e);
+        console.error('SerpAPI error:', e);
       }
     }
 
     if (articles.length === 0) {
-      return new Response(JSON.stringify({ drafts_created: 0, message: 'No new articles found.' }), {
+      return new Response(JSON.stringify({ drafts_created: 0, posts_published: 0, message: 'No new articles found.' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Step 3: Pick 10 diverse articles (spread across categories)
+    // Pick diverse articles for this batch
     const byCategory: Record<string, any[]> = {};
     for (const a of articles) {
       if (!byCategory[a.category]) byCategory[a.category] = [];
       byCategory[a.category].push(a);
     }
 
+    // Shuffle within categories for variety
+    for (const cat of Object.keys(byCategory)) {
+      byCategory[cat].sort(() => Math.random() - 0.5);
+    }
+
     const selected: any[] = [];
     const categories = Object.keys(byCategory);
     let round = 0;
-    while (selected.length < 10 && round < 5) {
+    while (selected.length < batch_size && round < 5) {
       for (const cat of categories) {
-        if (selected.length >= 10) break;
+        if (selected.length >= batch_size) break;
         const pool = byCategory[cat];
         if (pool.length > round) {
           selected.push(pool[round]);
@@ -175,7 +254,7 @@ Deno.serve(async (req) => {
       round++;
     }
 
-    // Step 4: Generate AI posts for each selected article
+    // Generate posts
     let draftsCreated = 0;
     let draftsPublished = 0;
 
@@ -224,20 +303,34 @@ Return ONLY valid JSON:
 
         const post = JSON.parse(jsonMatch[0]);
 
+        const slug = (post.title || article.title)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .substring(0, 80);
+
+        const uniqueSlug = slug + '-' + Date.now().toString(36);
+        const wordCount = (post.content || '').split(/\s+/).length;
+        const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
+
+        // Generate featured image
+        let imageUrl: string | null = null;
+        try {
+          imageUrl = await generateAndUploadImage(
+            post.title || article.title,
+            article.category,
+            uniqueSlug,
+            LOVABLE_API_KEY,
+            supabase,
+          );
+        } catch (imgErr) {
+          console.error('Image generation failed, continuing without image:', imgErr);
+        }
+
         if (auto_mode) {
-          // Auto-publish directly to blog_posts
-          const slug = (post.title || article.title)
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '')
-            .substring(0, 80);
-
-          const wordCount = (post.content || '').split(/\s+/).length;
-          const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
-
           const { error: pubErr } = await supabase.from('blog_posts').insert({
             title: post.title,
-            slug: slug + '-' + Date.now().toString(36),
+            slug: uniqueSlug,
             description: post.description,
             content: post.content,
             category: post.category || article.category,
@@ -245,11 +338,11 @@ Return ONLY valid JSON:
             author: 'PH0ENIX_WEB3',
             read_time: readTime,
             published: true,
+            image: imageUrl,
           });
 
           if (!pubErr) {
             draftsPublished++;
-            // Also save to drafts for record
             await supabase.from('draft_posts').insert({
               telegram_user_id,
               title: post.title,
@@ -260,12 +353,12 @@ Return ONLY valid JSON:
               source_url: article.link,
               source_name: article.source,
               status: 'published',
+              image_url: imageUrl,
             });
           } else {
             console.error('Auto-publish error:', pubErr);
           }
         } else {
-          // Save as draft for manual approval
           await supabase.from('draft_posts').insert({
             telegram_user_id,
             title: post.title,
@@ -276,9 +369,13 @@ Return ONLY valid JSON:
             source_url: article.link,
             source_name: article.source,
             status: 'pending',
+            image_url: imageUrl,
           });
           draftsCreated++;
         }
+
+        // Small delay between posts to avoid rate limits
+        await new Promise(r => setTimeout(r, 3000));
       } catch (e) {
         console.error(`Error processing "${article.title}":`, e);
       }
