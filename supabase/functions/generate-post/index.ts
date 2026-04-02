@@ -116,7 +116,33 @@ Default category: ${defaultCategory}`;
 
     const post = JSON.parse(jsonMatch[0]);
 
-    // Save as draft
+    // Always add branding tags
+    const brandingTags = ['CryptoPhoenixz', 'Phoenix the web3 sensei', 'sensei_phoenixz'];
+    const mergedTags = [...new Set([...(post.tags || []), ...brandingTags])];
+
+    const slug = (post.title || topic)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .substring(0, 80);
+    const uniqueSlug = slug + '-' + Date.now().toString(36);
+    const wordCount = (post.content || '').split(/\s+/).length;
+    const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
+
+    // Auto-publish directly to blog_posts
+    const { error: pubErr } = await supabase.from('blog_posts').insert({
+      title: post.title,
+      slug: uniqueSlug,
+      description: post.description,
+      content: post.content,
+      category: post.category || defaultCategory,
+      tags: mergedTags,
+      author: 'CryptoPhoenixz',
+      read_time: readTime,
+      published: true,
+    });
+
+    // Also save as draft for record
     const { data: draft, error: draftErr } = await supabase
       .from('draft_posts')
       .insert({
@@ -125,8 +151,8 @@ Default category: ${defaultCategory}`;
         description: post.description,
         content: post.content,
         category: post.category || defaultCategory,
-        tags: post.tags || [],
-        status: 'pending',
+        tags: mergedTags,
+        status: pubErr ? 'pending' : 'published',
       })
       .select('id')
       .single();
