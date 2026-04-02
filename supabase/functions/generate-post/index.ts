@@ -129,20 +129,7 @@ Default category: ${defaultCategory}`;
     const wordCount = (post.content || '').split(/\s+/).length;
     const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
 
-    // Auto-publish directly to blog_posts
-    const { error: pubErr } = await supabase.from('blog_posts').insert({
-      title: post.title,
-      slug: uniqueSlug,
-      description: post.description,
-      content: post.content,
-      category: post.category || defaultCategory,
-      tags: mergedTags,
-      author: 'CryptoPhoenixz',
-      read_time: readTime,
-      published: true,
-    });
-
-    // Also save as draft for record
+    // Save as draft for manual review (NOT auto-publish)
     const { data: draft, error: draftErr } = await supabase
       .from('draft_posts')
       .insert({
@@ -152,7 +139,7 @@ Default category: ${defaultCategory}`;
         content: post.content,
         category: post.category || defaultCategory,
         tags: mergedTags,
-        status: pubErr ? 'pending' : 'published',
+        status: 'pending',
       })
       .select('id')
       .single();
