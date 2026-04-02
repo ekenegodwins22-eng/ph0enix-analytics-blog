@@ -278,6 +278,7 @@ Deno.serve(async (req) => {
     // Generate posts
     let draftsCreated = 0;
     let draftsPublished = 0;
+    const publishedTitles: string[] = [];
 
     for (const article of selected) {
       try {
