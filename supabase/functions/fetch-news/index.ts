@@ -387,6 +387,7 @@ Return ONLY valid JSON:
 
           if (!pubErr) {
             draftsPublished++;
+            publishedTitles.push(post.title || article.title);
             await supabase.from('draft_posts').insert({
               telegram_user_id,
               title: post.title,
