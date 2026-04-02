@@ -100,6 +100,26 @@ async function generateAndUploadImage(
   }
 }
 
+async function sendTelegramNotification(
+  botToken: string,
+  chatId: number,
+  message: string,
+) {
+  try {
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message.substring(0, 4096),
+        parse_mode: 'HTML',
+      }),
+    });
+  } catch (e) {
+    console.error('Telegram notification error:', e);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -108,7 +128,7 @@ Deno.serve(async (req) => {
   try {
     let telegram_user_id: number;
     let auto_mode = false;
-    let batch_size = 2; // How many posts this invocation should create
+    let batch_size = 2;
 
     try {
       const body = await req.json();
@@ -125,6 +145,7 @@ Deno.serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
 
     const SERPAPI_KEY = Deno.env.get('SERPAPI_API_KEY');
+    const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -257,13 +278,25 @@ Deno.serve(async (req) => {
     // Generate posts
     let draftsCreated = 0;
     let draftsPublished = 0;
+    const publishedTitles: string[] = [];
 
     for (const article of selected) {
       try {
+        const now = new Date();
+        const currentDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
         const systemPrompt = `You are ${writingStyle}.
 Transform the following news article into a unique, SEO-optimized blog post.
 Do NOT copy the original — rewrite with your own analysis, insights, and expanded context.
 The article is from the "${article.category}" category.
+
+TODAY'S DATE IS: ${currentDate}
+CRITICAL DATE RULES:
+- Always use the correct current date when referring to "today", "yesterday", "this week", etc.
+- If the source article is from a past date, refer to it correctly (e.g. "On March 31st..." or "Last week...").
+- NEVER say "today is March 31" if today is actually April 2nd. Always verify date references.
+- When discussing recent events, use relative terms accurately based on today's date.
+
 ${trendingContext ? `\nTrending context:\n${trendingContext}` : ''}
 
 IMPORTANT SEO RULES:
@@ -354,6 +387,7 @@ Return ONLY valid JSON:
 
           if (!pubErr) {
             draftsPublished++;
+            publishedTitles.push(post.title || article.title);
             await supabase.from('draft_posts').insert({
               telegram_user_id,
               title: post.title,
@@ -390,6 +424,18 @@ Return ONLY valid JSON:
       } catch (e) {
         console.error(`Error processing "${article.title}":`, e);
       }
+    }
+
+    // Send Telegram notification
+    if (auto_mode && BOT_TOKEN && draftsPublished > 0) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+      let notifMsg = `🤖 <b>Auto-Publish Complete</b>\n⏰ ${timeStr} UTC\n📊 ${draftsPublished} post(s) published\n\n`;
+      for (let i = 0; i < publishedTitles.length; i++) {
+        notifMsg += `${i + 1}. ${publishedTitles[i]}\n`;
+      }
+      notifMsg += `\n🌐 View at senseiphoenix.name.ng/blog`;
+      await sendTelegramNotification(BOT_TOKEN, telegram_user_id, notifMsg);
     }
 
     return new Response(JSON.stringify({

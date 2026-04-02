@@ -326,7 +326,7 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const { error: pubErr } = await supabase.from('blog_posts').insert({
       title: d.title, description: d.description, content: d.content, slug,
       category: d.category || 'Crypto', tags: d.tags || [], image: d.image_url,
-      published: true, author: 'PH0ENIX_WEB3',
+      published: true, author: 'CryptoPhoenixz',
       read_time: `${Math.max(1, Math.ceil(d.content.split(/\s+/).length / 200))} min read`,
     });
 
@@ -387,13 +387,15 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const message = text.replace('/chat', '').trim();
     if (!message) { await sendTg(telegramApi, chatId, '❌ Usage: /chat What is DeFi?'); return; }
 
+    const now = new Date();
+    const currentDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
     await sendTg(telegramApi, chatId, '💭 Thinking...');
     const aiResp = await callLovableAI(
-      [{ role: 'system', content: 'You are a helpful crypto/Web3 expert. Be concise.' },
+      [{ role: 'system', content: `You are a helpful crypto/Web3 expert and general knowledge assistant. Be concise and accurate.\n\nToday's date is: ${currentDate}. Always use this as the current date reference. Never hallucinate or guess dates.` },
        { role: 'user', content: message }],
       lovableKey
     );
-    // Send as plain text to avoid HTML parse issues
     await sendTg(telegramApi, chatId, aiResp || '❌ No response.', 'Markdown');
     return;
   }
