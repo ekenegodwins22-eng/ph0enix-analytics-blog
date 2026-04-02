@@ -426,6 +426,18 @@ Return ONLY valid JSON:
       }
     }
 
+    // Send Telegram notification
+    if (auto_mode && BOT_TOKEN && draftsPublished > 0) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+      let notifMsg = `🤖 <b>Auto-Publish Complete</b>\n⏰ ${timeStr} UTC\n📊 ${draftsPublished} post(s) published\n\n`;
+      for (let i = 0; i < publishedTitles.length; i++) {
+        notifMsg += `${i + 1}. ${publishedTitles[i]}\n`;
+      }
+      notifMsg += `\n🌐 View at senseiphoenix.name.ng/blog`;
+      await sendTelegramNotification(BOT_TOKEN, telegram_user_id, notifMsg);
+    }
+
     return new Response(JSON.stringify({
       drafts_created: draftsCreated,
       posts_published: draftsPublished,

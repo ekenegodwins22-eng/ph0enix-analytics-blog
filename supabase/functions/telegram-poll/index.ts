@@ -326,7 +326,7 @@ async function processCommand(supabase: any, chatId: number, userId: number, tex
     const { error: pubErr } = await supabase.from('blog_posts').insert({
       title: d.title, description: d.description, content: d.content, slug,
       category: d.category || 'Crypto', tags: d.tags || [], image: d.image_url,
-      published: true, author: 'PH0ENIX_WEB3',
+      published: true, author: 'CryptoPhoenixz',
       read_time: `${Math.max(1, Math.ceil(d.content.split(/\s+/).length / 200))} min read`,
     });
 
