@@ -346,7 +346,7 @@ Return ONLY valid JSON:
             content: post.content,
             category: post.category || article.category,
             tags: mergedTags,
-            author: 'PHOENIX THE WEB3 SENSEI',
+            author: 'CryptoPhoenixz',
             read_time: readTime,
             published: true,
             image: imageUrl,
