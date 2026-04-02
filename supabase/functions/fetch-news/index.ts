@@ -100,6 +100,26 @@ async function generateAndUploadImage(
   }
 }
 
+async function sendTelegramNotification(
+  botToken: string,
+  chatId: number,
+  message: string,
+) {
+  try {
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message.substring(0, 4096),
+        parse_mode: 'HTML',
+      }),
+    });
+  } catch (e) {
+    console.error('Telegram notification error:', e);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -108,7 +128,7 @@ Deno.serve(async (req) => {
   try {
     let telegram_user_id: number;
     let auto_mode = false;
-    let batch_size = 2; // How many posts this invocation should create
+    let batch_size = 2;
 
     try {
       const body = await req.json();
@@ -125,6 +145,7 @@ Deno.serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
 
     const SERPAPI_KEY = Deno.env.get('SERPAPI_API_KEY');
+    const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
