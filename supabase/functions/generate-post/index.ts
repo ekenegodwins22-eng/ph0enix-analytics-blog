@@ -57,18 +57,27 @@ Deno.serve(async (req) => {
       }
     }
 
+    const now = new Date();
+    const currentDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
     // Step 2: Generate blog post with Lovable AI
     const systemPrompt = `You are ${writingStyle}
 
 Generate a comprehensive, SEO-optimized blog post about the given topic.
 Use the provided search results for the LATEST real-time information and data.
 
+TODAY'S DATE IS: ${currentDate}
+CRITICAL DATE RULES:
+- Always use the correct current date when referring to "today", "yesterday", "this week", etc.
+- If referencing past events, use accurate relative or absolute dates.
+- NEVER say "today is March 31" if today is actually a different date.
+
 Return ONLY valid JSON with these fields:
 {
   "title": "SEO-optimized title (60 chars max)",
   "description": "Meta description (155 chars max)",
   "content": "Full markdown content with headers, paragraphs, lists. At least 1000 words. Include an introduction, main sections with ## headers, and conclusion.",
-  "category": "One of: Crypto, DeFi, NFTs, Web3, Trading, Blockchain, Guides, News",
+  "category": "One of: Crypto, DeFi, NFTs, Web3, Trading, Blockchain, Guides, News, World News, Technology, Science, Finance, AI & Innovation",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
@@ -78,7 +87,8 @@ Rules:
 - Write in an engaging, authoritative tone
 - Include practical insights and actionable advice
 - Format with proper markdown (##, ###, **, -, etc.)
-- Make it comprehensive and well-structured`;
+- Make it comprehensive and well-structured
+- Naturally mention "CryptoPhoenixz" or "Phoenix the web3 sensei" once in the article body`;
 
     const userPrompt = `Write a blog post about: ${topic}
 
