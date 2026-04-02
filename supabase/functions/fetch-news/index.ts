@@ -281,10 +281,21 @@ Deno.serve(async (req) => {
 
     for (const article of selected) {
       try {
+        const now = new Date();
+        const currentDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
         const systemPrompt = `You are ${writingStyle}.
 Transform the following news article into a unique, SEO-optimized blog post.
 Do NOT copy the original — rewrite with your own analysis, insights, and expanded context.
 The article is from the "${article.category}" category.
+
+TODAY'S DATE IS: ${currentDate}
+CRITICAL DATE RULES:
+- Always use the correct current date when referring to "today", "yesterday", "this week", etc.
+- If the source article is from a past date, refer to it correctly (e.g. "On March 31st..." or "Last week...").
+- NEVER say "today is March 31" if today is actually April 2nd. Always verify date references.
+- When discussing recent events, use relative terms accurately based on today's date.
+
 ${trendingContext ? `\nTrending context:\n${trendingContext}` : ''}
 
 IMPORTANT SEO RULES:
