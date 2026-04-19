@@ -8,7 +8,7 @@ import { useBlogPostsByCategory } from "@/hooks/useBlogPosts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
 import { NativeBanner } from "@/components/ads/NativeBanner";
-import { Fragment } from "react";
+import { ResponsiveHilltopBanner } from "@/components/ads/HilltopBanner";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
@@ -96,6 +96,9 @@ export default function Blog() {
               Stay updated with the latest in Web3, crypto trading, and community building
             </p>
           </div>
+
+          {/* Top responsive banner — visible but unobtrusive */}
+          <ResponsiveHilltopBanner className="mb-6" />
 
           {/* Category Filter */}
           <div className="mb-12">
