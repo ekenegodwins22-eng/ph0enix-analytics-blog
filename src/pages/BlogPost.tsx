@@ -12,6 +12,8 @@ import { useBlogPost } from "@/hooks/useBlogPosts";
 import { MarkdownContent } from "@/components/blog/MarkdownContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
+import { NativeBanner } from "@/components/ads/NativeBanner";
+import { ResponsiveHilltopBanner } from "@/components/ads/HilltopBanner";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
@@ -235,10 +237,45 @@ export default function BlogPost() {
           {/* Table of Contents */}
           <TableOfContents content={post.content || ''} />
 
-          {/* Content */}
-          <div className="mb-12">
-            <MarkdownContent content={post.content || ''} />
-          </div>
+          {/* Content — split mid-article for a natural ad break */}
+          {(() => {
+            const fullContent = post.content || '';
+            const lines = fullContent.split('\n');
+            // Find heading indices (## or ###) and pick the one closest to the middle
+            const headingIdxs = lines
+              .map((l, i) => ({ l, i }))
+              .filter(({ l }) => /^#{2,3}\s/.test(l))
+              .map(({ i }) => i);
+            const mid = Math.floor(lines.length / 2);
+            let splitAt = -1;
+            if (headingIdxs.length > 0 && lines.length > 30) {
+              splitAt = headingIdxs.reduce((best, idx) =>
+                Math.abs(idx - mid) < Math.abs(best - mid) ? idx : best, headingIdxs[0]);
+              // Only split if the chosen heading isn't too close to the start/end
+              if (splitAt < lines.length * 0.25 || splitAt > lines.length * 0.75) {
+                splitAt = -1;
+              }
+            }
+
+            if (splitAt > 0) {
+              const first = lines.slice(0, splitAt).join('\n');
+              const second = lines.slice(splitAt).join('\n');
+              return (
+                <div className="mb-12">
+                  <MarkdownContent content={first} />
+                  <ResponsiveHilltopBanner className="my-8" />
+                  <MarkdownContent content={second} />
+                  <NativeBanner />
+                </div>
+              );
+            }
+            return (
+              <div className="mb-12">
+                <MarkdownContent content={fullContent} />
+                <ResponsiveHilltopBanner className="my-8" />
+              </div>
+            );
+          })()}
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
