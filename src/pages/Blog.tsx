@@ -7,6 +7,8 @@ import { BookOpen } from "lucide-react";
 import { useBlogPostsByCategory } from "@/hooks/useBlogPosts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
+import { NativeBanner } from "@/components/ads/NativeBanner";
+import { Fragment } from "react";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
@@ -117,22 +119,43 @@ export default function Blog() {
             </div>
           )}
 
-          {/* Blog Grid */}
+          {/* Blog Grid with native banner injected after the 6th post */}
           {!isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post) => (
-                <BlogCard
-                  key={post.slug}
-                  slug={post.slug}
-                  title={post.title}
-                  description={post.description}
-                  date={post.created_at}
-                  readTime={post.read_time || "5 min read"}
-                  category={post.category}
-                  image={post.image || undefined}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {posts.slice(0, 6).map((post) => (
+                  <BlogCard
+                    key={post.slug}
+                    slug={post.slug}
+                    title={post.title}
+                    description={post.description}
+                    date={post.created_at}
+                    readTime={post.read_time || "5 min read"}
+                    category={post.category}
+                    image={post.image || undefined}
+                  />
+                ))}
+              </div>
+
+              {posts.length > 0 && <NativeBanner />}
+
+              {posts.length > 6 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                  {posts.slice(6).map((post) => (
+                    <BlogCard
+                      key={post.slug}
+                      slug={post.slug}
+                      title={post.title}
+                      description={post.description}
+                      date={post.created_at}
+                      readTime={post.read_time || "5 min read"}
+                      category={post.category}
+                      image={post.image || undefined}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
 
           {/* Empty state */}
