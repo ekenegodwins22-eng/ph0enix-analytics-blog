@@ -1,4 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+/**
+ * Adsterra (highperformanceformat.com) iframe banner.
+ *
+ * Each ad is rendered inside an isolated <iframe srcDoc> so the `atOptions`
+ * global from one banner cannot clobber another, and a slow/blocked ad
+ * network can never break the parent React app.
+ */
 
 type BannerKey =
   | "468x60"
@@ -18,39 +26,22 @@ const BANNERS: Record<BannerKey, { key: string; width: number; height: number }>
 interface HilltopBannerProps {
   size: BannerKey;
   className?: string;
-  /** Optional label shown above the ad (e.g. "Advertisement") */
   label?: boolean;
 }
 
-/**
- * HilltopAds iframe banner. Each instance loads its own invoke.js into a
- * dedicated container so multiple sizes can coexist on the same page.
- */
+const buildSrcDoc = (key: string, width: number, height: number) => `<!doctype html>
+<html><head><meta charset="utf-8" />
+<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}</style>
+</head><body>
+<script type="text/javascript">
+  atOptions = { 'key':'${key}', 'format':'iframe', 'height':${height}, 'width':${width}, 'params':{} };
+</script>
+<script type="text/javascript" src="https://www.highperformanceformat.com/${key}/invoke.js"></script>
+</body></html>`;
+
 export const HilltopBanner = ({ size, className = "", label = true }: HilltopBannerProps) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const { key, width, height } = BANNERS[size];
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Avoid double-injection on hot reloads / re-renders
-    if (container.dataset.loaded === "true") return;
-    container.dataset.loaded = "true";
-
-    // Inline atOptions script
-    const opts = document.createElement("script");
-    opts.type = "text/javascript";
-    opts.text = `atOptions = { 'key':'${key}', 'format':'iframe', 'height':${height}, 'width':${width}, 'params':{} };`;
-    container.appendChild(opts);
-
-    // Loader script
-    const loader = document.createElement("script");
-    loader.type = "text/javascript";
-    loader.src = `https://www.highperformanceformat.com/${key}/invoke.js`;
-    loader.async = true;
-    container.appendChild(loader);
-  }, [key, width, height]);
+  const srcDoc = buildSrcDoc(key, width, height);
 
   return (
     <div className={`w-full my-6 flex flex-col items-center ${className}`}>
@@ -59,31 +50,48 @@ export const HilltopBanner = ({ size, className = "", label = true }: HilltopBan
           Advertisement
         </span>
       )}
-      <div
-        ref={containerRef}
-        style={{ width, height, maxWidth: "100%" }}
-        className="overflow-hidden"
+      <iframe
+        title={`ad-${size}`}
+        srcDoc={srcDoc}
+        width={width}
+        height={height}
+        style={{ border: 0, maxWidth: "100%", display: "block" }}
+        scrolling="no"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
       />
     </div>
   );
 };
 
 /**
- * Responsive horizontal banner: shows 728x90 on lg+, 468x60 on sm+, 320x50 on mobile.
- * Renders all three but hides via CSS so the right one fills naturally.
+ * Picks ONE banner size based on viewport width and renders it.
+ * Avoids mounting 3 ad iframes at once (which wastes bandwidth and used
+ * to clobber the shared `atOptions` global).
  */
 export const ResponsiveHilltopBanner = ({ className = "" }: { className?: string }) => {
+  const [size, setSize] = useState<BannerKey | null>(null);
+
+  useEffect(() => {
+    const pick = () => {
+      const w = window.innerWidth;
+      if (w >= 1024) setSize("728x90");
+      else if (w >= 640) setSize("468x60");
+      else setSize("320x50");
+    };
+    pick();
+    window.addEventListener("resize", pick);
+    return () => window.removeEventListener("resize", pick);
+  }, []);
+
+  if (!size) {
+    return <div className={`w-full my-6 ${className}`} style={{ minHeight: 60 }} />;
+  }
+
   return (
-    <div className={`w-full flex justify-center my-6 ${className}`}>
-      <div className="block sm:hidden">
-        <HilltopBanner size="320x50" label />
-      </div>
-      <div className="hidden sm:block lg:hidden">
-        <HilltopBanner size="468x60" label />
-      </div>
-      <div className="hidden lg:block">
-        <HilltopBanner size="728x90" label />
-      </div>
+    <div className={`w-full flex justify-center ${className}`}>
+      <HilltopBanner size={size} />
     </div>
   );
 };
