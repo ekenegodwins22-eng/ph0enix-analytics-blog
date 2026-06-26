@@ -55,13 +55,49 @@ const Admin = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [autoPostEnabled, setAutoPostEnabled] = useState<boolean | null>(null);
+  const [autoPostSaving, setAutoPostSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     checkAuth();
     fetchPosts();
+    fetchAutoPostSetting();
   }, []);
+
+  const fetchAutoPostSetting = async () => {
+    const { data } = await supabase
+      .from("bot_settings")
+      .select("auto_fetch_enabled")
+      .limit(1)
+      .maybeSingle();
+    setAutoPostEnabled(data?.auto_fetch_enabled ?? true);
+  };
+
+  const toggleAutoPost = async (next: boolean) => {
+    setAutoPostSaving(true);
+    const prev = autoPostEnabled;
+    setAutoPostEnabled(next);
+    try {
+      const { error } = await supabase
+        .from("bot_settings")
+        .update({ auto_fetch_enabled: next })
+        .eq("telegram_user_id", 7444500411);
+      if (error) throw error;
+      toast({
+        title: next ? "Auto-posting enabled" : "Auto-posting disabled",
+        description: next
+          ? "The Telegram bot will resume scheduled blog posts."
+          : "Scheduled blog posts are paused. You can still publish manually.",
+      });
+    } catch (e: any) {
+      setAutoPostEnabled(prev);
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setAutoPostSaving(false);
+    }
+  };
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -486,40 +522,72 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="settings">
-            <Card className="max-w-md">
-              <CardHeader>
-                <CardTitle>Change Password</CardTitle>
-                <CardDescription>Update your account password</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">New Password</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Enter new password"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm new password"
-                  />
-                </div>
-                <Button 
-                  onClick={handleChangePassword} 
-                  disabled={changingPassword || !newPassword || !confirmPassword}
-                >
-                  {changingPassword ? "Updating..." : "Update Password"}
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="grid gap-6 max-w-md">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Auto-Posting</CardTitle>
+                  <CardDescription>
+                    Master switch for the scheduled Telegram blog bot. Turn this off
+                    to stop automatic posts (e.g. to conserve AI credits). Manual
+                    publishing from this panel still works.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <Label className="text-base">Scheduled auto-posts</Label>
+                      <p className="text-sm text-muted-foreground">
+                        {autoPostEnabled === null
+                          ? "Loading…"
+                          : autoPostEnabled
+                          ? "Enabled — bot will publish on schedule."
+                          : "Paused — no automatic posts will be created."}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={!!autoPostEnabled}
+                      disabled={autoPostEnabled === null || autoPostSaving}
+                      onCheckedChange={toggleAutoPost}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Change Password</CardTitle>
+                  <CardDescription>Update your account password</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Enter new password"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleChangePassword}
+                    disabled={changingPassword || !newPassword || !confirmPassword}
+                  >
+                    {changingPassword ? "Updating..." : "Update Password"}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
