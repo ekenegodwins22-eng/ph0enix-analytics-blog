@@ -153,9 +153,23 @@ Deno.serve(async (req) => {
 
     const { data: settings } = await supabase
       .from('bot_settings')
-      .select('writing_style, default_category')
+      .select('writing_style, default_category, auto_fetch_enabled')
       .eq('telegram_user_id', telegram_user_id)
       .single();
+
+    // Master kill-switch: if auto_fetch is disabled, skip everything when running
+    // unattended (e.g. pg_cron / scheduled invocations). Manual calls can override
+    // by passing `force: true` in the request body.
+    let force = false;
+    try { const b = await req.clone().json(); force = !!b.force; } catch {}
+    if (auto_mode && !force && settings && settings.auto_fetch_enabled === false) {
+      return new Response(JSON.stringify({
+        skipped: true,
+        reason: 'auto_fetch_enabled is OFF in bot_settings',
+        drafts_created: 0,
+        posts_published: 0,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
 
     const writingStyle = settings?.writing_style || 'Professional writer covering crypto, tech, world news, science, and finance';
 

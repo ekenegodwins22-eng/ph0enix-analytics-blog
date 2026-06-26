@@ -7,8 +7,6 @@ import { BookOpen } from "lucide-react";
 import { useBlogPostsByCategory } from "@/hooks/useBlogPosts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
-import { NativeBanner } from "@/components/ads/NativeBanner";
-import { ResponsiveHilltopBanner } from "@/components/ads/HilltopBanner";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
@@ -97,8 +95,7 @@ export default function Blog() {
             </p>
           </div>
 
-          {/* Top responsive banner — visible but unobtrusive */}
-          <ResponsiveHilltopBanner className="mb-6" />
+
 
           {/* Category Filter */}
           <div className="mb-12">
@@ -140,7 +137,7 @@ export default function Blog() {
                 ))}
               </div>
 
-              {posts.length > 0 && <NativeBanner />}
+
 
               {posts.length > 6 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">

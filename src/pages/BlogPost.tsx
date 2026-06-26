@@ -12,8 +12,6 @@ import { useBlogPost } from "@/hooks/useBlogPosts";
 import { MarkdownContent } from "@/components/blog/MarkdownContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
-import { NativeBanner } from "@/components/ads/NativeBanner";
-import { ResponsiveHilltopBanner } from "@/components/ads/HilltopBanner";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
@@ -263,16 +261,13 @@ export default function BlogPost() {
               return (
                 <div className="mb-12">
                   <MarkdownContent content={first} />
-                  <ResponsiveHilltopBanner className="my-8" />
                   <MarkdownContent content={second} />
-                  <NativeBanner />
                 </div>
               );
             }
             return (
               <div className="mb-12">
                 <MarkdownContent content={fullContent} />
-                <ResponsiveHilltopBanner className="my-8" />
               </div>
             );
           })()}
