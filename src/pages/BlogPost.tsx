@@ -261,16 +261,13 @@ export default function BlogPost() {
               return (
                 <div className="mb-12">
                   <MarkdownContent content={first} />
-                  <ResponsiveHilltopBanner className="my-8" />
                   <MarkdownContent content={second} />
-                  <NativeBanner />
                 </div>
               );
             }
             return (
               <div className="mb-12">
                 <MarkdownContent content={fullContent} />
-                <ResponsiveHilltopBanner className="my-8" />
               </div>
             );
           })()}

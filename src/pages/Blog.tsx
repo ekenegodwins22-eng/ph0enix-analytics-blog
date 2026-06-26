@@ -95,8 +95,7 @@ export default function Blog() {
             </p>
           </div>
 
-          {/* Top responsive banner — visible but unobtrusive */}
-          <ResponsiveHilltopBanner className="mb-6" />
+
 
           {/* Category Filter */}
           <div className="mb-12">
@@ -138,7 +137,7 @@ export default function Blog() {
                 ))}
               </div>
 
-              {posts.length > 0 && <NativeBanner />}
+
 
               {posts.length > 6 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
