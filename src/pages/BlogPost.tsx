@@ -12,8 +12,6 @@ import { useBlogPost } from "@/hooks/useBlogPosts";
 import { MarkdownContent } from "@/components/blog/MarkdownContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Helmet } from "react-helmet";
-import { NativeBanner } from "@/components/ads/NativeBanner";
-import { ResponsiveHilltopBanner } from "@/components/ads/HilltopBanner";
 
 const SITE_URL = "https://www.senseiphoenix.name.ng";
 const PROFILE_IMG = "https://i.ibb.co/7tNbF3k3/file-000000000f3461f7b9667cad34755326.png";
